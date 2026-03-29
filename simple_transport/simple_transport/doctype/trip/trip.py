@@ -79,8 +79,6 @@ class Trip(Document):
                 "consignee_name",
                 "consignee_contact_no",
                 "consignee_address",
-                "goods_condition",
-                "package_count",
                 "loading_supervisor_name",
                 "remarks",
                 "trip",
@@ -122,8 +120,6 @@ class Trip(Document):
         self.consignee_name = self.consignee_name or receipt.consignee_name
         self.consignee_contact_no = self.consignee_contact_no or receipt.consignee_contact_no
         self.consignee_address = self.consignee_address or receipt.consignee_address
-        self.goods_condition = self.goods_condition or receipt.goods_condition
-        self.package_count = self.package_count or receipt.package_count
         self.loading_supervisor_name = (
             self.loading_supervisor_name or receipt.loading_supervisor_name
         )

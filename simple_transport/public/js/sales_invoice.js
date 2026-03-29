@@ -34,7 +34,7 @@ frappe.ui.form.on("Sales Invoice", {
 
 		if (frm.doc.docstatus === 0 && (frm.doc.st_trip_details || []).length) {
 			frm.set_intro(
-				"Trip rows drive the invoice breakup, and the freight service item is synced automatically on save.",
+				"Trip rows drive the invoice breakup, and the Transportation Service item is synced automatically on save.",
 				"blue"
 			);
 		}

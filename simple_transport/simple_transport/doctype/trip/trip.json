@@ -34,8 +34,6 @@
   "consignee_name",
   "consignee_contact_no",
   "consignee_address",
-  "goods_condition",
-  "package_count",
   "loading_supervisor_name",
   "dispatch_section",
   "vehicle",
@@ -220,16 +218,6 @@
    "fieldname": "consignee_address",
    "fieldtype": "Small Text",
    "label": "Consignee Address"
-  },
-  {
-   "fieldname": "goods_condition",
-   "fieldtype": "Data",
-   "label": "Goods Condition"
-  },
-  {
-   "fieldname": "package_count",
-   "fieldtype": "Int",
-   "label": "Package Count"
   },
   {
    "fieldname": "loading_supervisor_name",

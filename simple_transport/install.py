@@ -9,6 +9,7 @@ from simple_transport.print_formats import (
 	ensure_lorry_receipt_print_format,
 	ensure_sales_invoice_print_format,
 )
+from simple_transport.sales_invoice import ensure_transport_service_item
 
 
 CUSTOM_FIELDS = {
@@ -329,6 +330,7 @@ def after_install():
 	cleanup_obsolete_transport_order_customizations()
 	sync_route_locations()
 	ensure_gps_integration_settings()
+	ensure_transport_service_item()
 	ensure_lorry_receipt_print_format()
 	ensure_sales_invoice_print_format()
 	sync_transport_access()
@@ -339,6 +341,7 @@ def after_migrate():
 	cleanup_obsolete_transport_order_customizations()
 	sync_route_locations()
 	ensure_gps_integration_settings()
+	ensure_transport_service_item()
 	ensure_lorry_receipt_print_format()
 	ensure_sales_invoice_print_format()
 	sync_transport_access()

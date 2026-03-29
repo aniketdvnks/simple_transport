@@ -5,7 +5,8 @@ from frappe import _
 from frappe.utils import cint, flt, getdate
 
 
-TRANSPORT_SERVICE_ITEM = "TRANSPORT-FREIGHT-SERVICE"
+TRANSPORT_SERVICE_ITEM = "Transportation Service"
+LEGACY_TRANSPORT_SERVICE_ITEM = "TRANSPORT-FREIGHT-SERVICE"
 DEFAULT_SERVICE_NAME = "Transportation Service"
 BILLABLE_TRIP_STATUS = "Completed"
 
@@ -135,20 +136,13 @@ def sync_invoice_item(doc):
 	if not doc.get("st_trip_details"):
 		return
 
-	item_meta = frappe.db.get_value(
-		"Item",
-		TRANSPORT_SERVICE_ITEM,
-		["item_name", "stock_uom", "description"],
-		as_dict=True,
-	)
+	item_meta = get_transport_service_item()
 	if not item_meta:
 		frappe.throw(
-			_("Transport service item {0} was not found.").format(TRANSPORT_SERVICE_ITEM)
+			_("Transport service item {0} was not found.").format(DEFAULT_SERVICE_NAME)
 		)
 
-	total_weight = sum(flt(row.weight_mt) for row in doc.get("st_trip_details", []))
 	total_amount = sum(flt(row.amount) for row in doc.get("st_trip_details", []))
-	average_rate = total_amount / total_weight if total_weight else total_amount
 
 	if doc.get("items"):
 		item = doc.items[0]
@@ -156,11 +150,11 @@ def sync_invoice_item(doc):
 	else:
 		item = doc.append("items", {})
 
-	item.item_code = TRANSPORT_SERVICE_ITEM
-	item.item_name = item_meta.item_name or "Transport Freight Service"
-	item.uom = item_meta.stock_uom or "MT"
-	item.qty = total_weight or 1
-	item.rate = average_rate or total_amount
+	item.item_code = item_meta.name
+	item.item_name = item_meta.item_name or DEFAULT_SERVICE_NAME
+	item.uom = item_meta.stock_uom or "Nos"
+	item.qty = 1
+	item.rate = total_amount
 	item.description = build_transport_description(doc, item_meta.description)
 
 
@@ -172,6 +166,61 @@ def build_transport_description(doc, default_description=None):
 	if doc.st_location_of_supply:
 		details.append(_("Location of Supply: {0}").format(doc.st_location_of_supply))
 	return "\n".join([description, *details]) if details else description
+
+
+def get_transport_service_item():
+	item_meta = frappe.db.get_value(
+		"Item",
+		TRANSPORT_SERVICE_ITEM,
+		["name", "item_name", "stock_uom", "description"],
+		as_dict=True,
+	)
+	if item_meta:
+		return item_meta
+
+	item_meta = frappe.db.get_value(
+		"Item",
+		{"item_name": DEFAULT_SERVICE_NAME, "disabled": 0},
+		["name", "item_name", "stock_uom", "description"],
+		as_dict=True,
+	)
+	if item_meta:
+		return item_meta
+
+	return frappe.db.get_value(
+		"Item",
+		LEGACY_TRANSPORT_SERVICE_ITEM,
+		["name", "item_name", "stock_uom", "description"],
+		as_dict=True,
+	)
+
+
+def ensure_transport_service_item():
+	if frappe.db.exists("Item", TRANSPORT_SERVICE_ITEM):
+		return
+
+	if frappe.db.exists("Item", {"item_name": DEFAULT_SERVICE_NAME, "disabled": 0}):
+		return
+
+	item_group = "Services" if frappe.db.exists("Item Group", "Services") else "All Item Groups"
+	stock_uom = "Nos"
+	if not frappe.db.exists("UOM", stock_uom):
+		uoms = frappe.get_all("UOM", pluck="name", limit=1)
+		stock_uom = uoms[0] if uoms else "Nos"
+
+	item = frappe.get_doc(
+		{
+			"doctype": "Item",
+			"item_code": TRANSPORT_SERVICE_ITEM,
+			"item_name": DEFAULT_SERVICE_NAME,
+			"item_group": item_group,
+			"stock_uom": stock_uom,
+			"is_stock_item": 0,
+			"is_sales_item": 1,
+			"description": DEFAULT_SERVICE_NAME,
+		}
+	)
+	item.insert(ignore_permissions=True)
 
 
 def get_trip_billing_data(trip_name):
