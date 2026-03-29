@@ -4,11 +4,12 @@ app_publisher = "DVNKS Systems Pvt Ltd"
 app_description = "Simple Transport Management App"
 app_email = "aniket@dvnks.com"
 app_license = "mit"
+app_home = "/app"
 
 # Apps
 # ------------------
 
-# required_apps = []
+required_apps = ["erpnext"]
 
 # Each item in the list will be shown as an app in the apps page
 # add_to_apps_screen = [
@@ -43,7 +44,12 @@ app_license = "mit"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {
+	"Lorry Receipt": "public/js/lorry_receipt.js",
+	"Trip": "public/js/trip.js",
+	"Fuel Request": "public/js/fuel_request.js",
+	"Sales Invoice": "public/js/sales_invoice.js",
+}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -83,12 +89,13 @@ app_license = "mit"
 # ------------
 
 # before_install = "simple_transport.install.before_install"
-# after_install = "simple_transport.install.after_install"
+after_install = "simple_transport.install.after_install"
+before_migrate = "simple_transport.install.before_migrate"
 
 # Uninstallation
 # ------------
 
-# before_uninstall = "simple_transport.uninstall.before_uninstall"
+before_uninstall = "simple_transport.install.before_uninstall"
 # after_uninstall = "simple_transport.uninstall.after_uninstall"
 
 # Integration Setup
@@ -120,10 +127,25 @@ app_license = "mit"
 # permission_query_conditions = {
 # 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
 # }
-#
-# has_permission = {
-# 	"Event": "frappe.desk.doctype.event.event.has_permission",
-# }
+permission_query_conditions = {
+	"Lorry Receipt": "simple_transport.permissions.get_lorry_receipt_permission_query_conditions",
+	"Trip": "simple_transport.permissions.get_trip_permission_query_conditions",
+	"Fuel Request": "simple_transport.permissions.get_fuel_request_permission_query_conditions",
+	"Vehicle": "simple_transport.permissions.get_vehicle_permission_query_conditions",
+	"Employee": "simple_transport.permissions.get_employee_permission_query_conditions",
+	"Vehicle Assignment": "simple_transport.permissions.get_vehicle_assignment_permission_query_conditions",
+	"GPS Webhook Log": "simple_transport.permissions.get_gps_webhook_log_permission_query_conditions",
+}
+
+has_permission = {
+	"Lorry Receipt": "simple_transport.permissions.lorry_receipt_has_permission",
+	"Trip": "simple_transport.permissions.trip_has_permission",
+	"Fuel Request": "simple_transport.permissions.fuel_request_has_permission",
+	"Vehicle": "simple_transport.permissions.vehicle_has_permission",
+	"Employee": "simple_transport.permissions.employee_has_permission",
+	"Vehicle Assignment": "simple_transport.permissions.vehicle_assignment_has_permission",
+	"GPS Webhook Log": "simple_transport.permissions.gps_webhook_log_has_permission",
+}
 
 # DocType Class
 # ---------------
@@ -137,13 +159,14 @@ app_license = "mit"
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Sales Invoice": {
+		"validate": "simple_transport.sales_invoice.sync_transport_invoice",
+		"on_update": "simple_transport.sales_invoice.sync_trip_invoice_links",
+		"on_cancel": "simple_transport.sales_invoice.clear_trip_invoice_links",
+		"on_trash": "simple_transport.sales_invoice.clear_trip_invoice_links",
+	}
+}
 
 # Scheduled Tasks
 # ---------------
@@ -181,9 +204,9 @@ app_license = "mit"
 # each overriding function accepts a `data` argument;
 # generated from the base implementation of the doctype dashboard,
 # along with any modifications made in other Frappe apps
-# override_doctype_dashboards = {
-# 	"Task": "simple_transport.task.get_dashboard_data"
-# }
+override_doctype_dashboards = {
+	"Vehicle": "simple_transport.dashboard.get_vehicle_dashboard_data"
+}
 
 # exempt linked doctypes from being automatically cancelled
 #
@@ -242,8 +265,9 @@ app_license = "mit"
 # 	"Logging DocType Name": 30  # days to retain logs
 # }
 
+after_migrate = "simple_transport.install.after_migrate"
+
 # Translation
 # ------------
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
-

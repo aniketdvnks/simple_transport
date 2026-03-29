@@ -1,0 +1,364 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "autoname": "naming_series:",
+ "creation": "2026-03-28 18:00:00",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "company",
+  "column_break_uhkd",
+  "status",
+  "trip",
+  "column_break_rdai",
+  "lr_date",
+  "gate_pass_no",
+  "parties_section",
+  "customer",
+  "column_break_tzdu",
+  "operation_manager",
+  "route_section",
+  "route_master",
+  "distance_km",
+  "column_break_vrxb",
+  "loading_point",
+  "unloading_point",
+  "dispatch_section",
+  "vehicle",
+  "vehicle_capacity_mt",
+  "column_break_hnnt",
+  "driver",
+  "cargo_section",
+  "goods_description",
+  "freight_amount",
+  "column_break_hlem",
+  "quantity_mt",
+  "gross_weight_mt",
+  "freight_rate_per_mt",
+  "receipt_section",
+  "consignor_name",
+  "consignor_contact_no",
+  "consignor_address",
+  "remarks",
+  "receipt_column_break",
+  "consignee_name",
+  "consignee_contact_no",
+  "consignee_address",
+  "loading_supervisor_name",
+  "gst_payable_by",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "default": "LR-.YYYY.-.#####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "hidden": 1,
+   "label": "Series",
+   "options": "LR-.YYYY.-.#####",
+   "print_hide": 1,
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Draft\nIssued\nCancelled",
+   "read_only": 1
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "default": "Today",
+   "fieldname": "lr_date",
+   "fieldtype": "Date",
+   "label": "LR Date",
+   "reqd": 1
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "gate_pass_no",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "label": "Gate Pass No"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "trip",
+   "fieldtype": "Link",
+   "label": "Trip",
+   "options": "Trip",
+   "read_only": 1
+  },
+  {
+   "fieldname": "parties_section",
+   "fieldtype": "Section Break",
+   "label": "Parties"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Customer",
+   "options": "Customer",
+   "reqd": 1
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "operation_manager",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Operation Manager",
+   "options": "User",
+   "reqd": 1
+  },
+  {
+   "fieldname": "route_section",
+   "fieldtype": "Section Break",
+   "label": "Route"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "route_master",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Route Master",
+   "options": "Route Master",
+   "reqd": 1
+  },
+  {
+   "fieldname": "loading_point",
+   "fieldtype": "Data",
+   "label": "Loading Point"
+  },
+  {
+   "fieldname": "unloading_point",
+   "fieldtype": "Data",
+   "label": "Unloading Point"
+  },
+  {
+   "fieldname": "distance_km",
+   "fieldtype": "Float",
+   "label": "Distance (KM)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "dispatch_section",
+   "fieldtype": "Section Break",
+   "label": "Dispatch"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "vehicle",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Vehicle",
+   "options": "Vehicle",
+   "reqd": 1
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fetch_from": "vehicle.employee",
+   "fieldname": "driver",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Driver",
+   "link_filters": "[[\"Employee\",\"st_is_driver\",\"=\",1]]",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fieldname": "vehicle_capacity_mt",
+   "fieldtype": "Float",
+   "label": "Vehicle Capacity (MT)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cargo_section",
+   "fieldtype": "Section Break",
+   "label": "Cargo & Freight"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "goods_description",
+   "fieldtype": "Link",
+   "label": "Material",
+   "options": "Material",
+   "reqd": 1
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "quantity_mt",
+   "fieldtype": "Float",
+   "label": "Net Weight (MT)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "gross_weight_mt",
+   "fieldtype": "Float",
+   "label": "Gross Weight (MT)"
+  },
+  {
+   "allow_in_quick_entry": 1,
+   "fieldname": "freight_rate_per_mt",
+   "fieldtype": "Currency",
+   "label": "Freight Rate per MT"
+  },
+  {
+   "fieldname": "freight_amount",
+   "fieldtype": "Currency",
+   "label": "Freight Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "receipt_section",
+   "fieldtype": "Section Break",
+   "label": "Receipt Copy"
+  },
+  {
+   "fieldname": "consignor_name",
+   "fieldtype": "Data",
+   "label": "Consignor Name"
+  },
+  {
+   "fieldname": "consignor_contact_no",
+   "fieldtype": "Data",
+   "label": "Consignor Contact No"
+  },
+  {
+   "fieldname": "consignor_address",
+   "fieldtype": "Small Text",
+   "label": "Consignor Address"
+  },
+  {
+   "fieldname": "receipt_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "consignee_name",
+   "fieldtype": "Data",
+   "label": "Consignee Name"
+  },
+  {
+   "fieldname": "consignee_contact_no",
+   "fieldtype": "Data",
+   "label": "Consignee Contact No"
+  },
+  {
+   "fieldname": "consignee_address",
+   "fieldtype": "Small Text",
+   "label": "Consignee Address"
+  },
+  {
+   "fieldname": "loading_supervisor_name",
+   "fieldtype": "Data",
+   "label": "Loading Supervisor"
+  },
+  {
+   "fieldname": "gst_payable_by",
+   "fieldtype": "Select",
+   "label": "GST Payable By",
+   "options": "\nConsignor\nConsignee\nGTA"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  },
+  {
+   "fieldname": "column_break_uhkd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_rdai",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_tzdu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_vrxb",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_hnnt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_hlem",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Lorry Receipt",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  }
+ ],
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-03-28 17:07:30.914965",
+ "modified_by": "Administrator",
+ "module": "Simple Transport",
+ "name": "Lorry Receipt",
+ "naming_rule": "By \"Naming Series\" field",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Fleet Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "quick_entry": 1,
+ "row_format": "Dynamic",
+ "search_fields": "customer,vehicle,driver,goods_description,consignor_name,consignee_name",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "vehicle",
+ "track_changes": 1
+}

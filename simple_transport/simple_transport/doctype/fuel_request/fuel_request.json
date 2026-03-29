@@ -1,0 +1,308 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "autoname": "naming_series:",
+ "creation": "2026-03-28 10:00:00.000000",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "status",
+  "company",
+  "request_date",
+  "reference_section",
+  "trip",
+  "lorry_receipt",
+  "customer",
+  "reference_column_break",
+  "vehicle",
+  "driver",
+  "route_master",
+  "distance_km",
+  "request_section",
+  "fuel_rate_per_liter",
+  "requested_qty_liters",
+  "requested_amount",
+  "reason",
+  "approval_section",
+  "approval_status",
+  "approved_qty_liters",
+  "approved_amount",
+  "approval_column_break",
+  "approved_by",
+  "approval_date",
+  "disbursement_status",
+  "disbursement_section",
+  "disbursed_qty_liters",
+  "disbursed_amount",
+  "disbursement_column_break",
+  "disbursed_on",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "default": "FREQ-.YYYY.-.#####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "FREQ-.YYYY.-.#####",
+   "reqd": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Draft\nPending Approval\nApproved\nRejected\nPartially Disbursed\nDisbursed\nCancelled",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "trip.company",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "default": "Today",
+   "fieldname": "request_date",
+   "fieldtype": "Date",
+   "label": "Request Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reference_section",
+   "fieldtype": "Section Break",
+   "label": "Trip Reference"
+  },
+  {
+   "fieldname": "trip",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Trip",
+   "options": "Trip",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "trip.lorry_receipt",
+   "fieldname": "lorry_receipt",
+   "fieldtype": "Link",
+   "label": "Lorry Receipt",
+   "options": "Lorry Receipt",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "trip.customer",
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "reference_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "trip.vehicle",
+   "fieldname": "vehicle",
+   "fieldtype": "Link",
+   "label": "Vehicle",
+   "options": "Vehicle",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "trip.driver",
+   "fieldname": "driver",
+   "fieldtype": "Link",
+   "label": "Driver",
+   "options": "Employee",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "trip.route_master",
+   "fieldname": "route_master",
+   "fieldtype": "Link",
+   "label": "Route Master",
+   "options": "Route Master",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "trip.distance_km",
+   "fieldname": "distance_km",
+   "fieldtype": "Float",
+   "label": "Distance (KM)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "request_section",
+   "fieldtype": "Section Break",
+   "label": "Requested Fuel"
+  },
+  {
+   "fieldname": "fuel_rate_per_liter",
+   "fieldtype": "Currency",
+   "label": "Fuel Rate per Liter"
+  },
+  {
+   "fieldname": "requested_qty_liters",
+   "fieldtype": "Float",
+   "label": "Requested Quantity (Liters)"
+  },
+  {
+   "fieldname": "requested_amount",
+   "fieldtype": "Currency",
+   "label": "Requested Amount"
+  },
+  {
+   "fieldname": "reason",
+   "fieldtype": "Small Text",
+   "label": "Reason"
+  },
+  {
+   "fieldname": "approval_section",
+   "fieldtype": "Section Break",
+   "label": "Approval"
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "Pending",
+   "fieldname": "approval_status",
+   "fieldtype": "Select",
+   "label": "Approval Status",
+   "options": "Pending\nApproved\nRejected"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "approved_qty_liters",
+   "fieldtype": "Float",
+   "label": "Approved Quantity (Liters)"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "approved_amount",
+   "fieldtype": "Currency",
+   "label": "Approved Amount"
+  },
+  {
+   "fieldname": "approval_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "approved_by",
+   "fieldtype": "Link",
+   "label": "Approved By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "approval_date",
+   "fieldtype": "Datetime",
+   "label": "Approval Date",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "default": "Pending",
+   "fieldname": "disbursement_status",
+   "fieldtype": "Select",
+   "label": "Disbursement Status",
+   "options": "Pending\nPartially Disbursed\nDisbursed"
+  },
+  {
+   "fieldname": "disbursement_section",
+   "fieldtype": "Section Break",
+   "label": "Disbursement"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "disbursed_qty_liters",
+   "fieldtype": "Float",
+   "label": "Disbursed Quantity (Liters)"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "disbursed_amount",
+   "fieldtype": "Currency",
+   "label": "Disbursed Amount"
+  },
+  {
+   "fieldname": "disbursement_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "disbursed_on",
+   "fieldtype": "Datetime",
+   "label": "Disbursed On",
+   "read_only": 1
+  },
+  {
+   "allow_on_submit": 1,
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  }
+ ],
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2026-03-28 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Simple Transport",
+ "name": "Fuel Request",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "amend": 1,
+   "cancel": 1,
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Fleet Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "trip,lorry_receipt,vehicle,customer",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "trip",
+ "track_changes": 1
+}

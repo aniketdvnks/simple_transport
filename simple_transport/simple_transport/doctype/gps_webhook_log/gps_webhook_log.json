@@ -1,0 +1,173 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "autoname": "GLOG-.YYYY.-.#####",
+ "creation": "2026-03-29 12:05:00.000000",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "webhook_type",
+  "processing_status",
+  "received_on",
+  "column_break_ak1",
+  "entity",
+  "action",
+  "event_time",
+  "request_refid",
+  "references_section",
+  "vehicle",
+  "trip",
+  "vehicle_plate",
+  "provider_id",
+  "details_section",
+  "response_message",
+  "error_message",
+  "headers_json",
+  "payload_json"
+ ],
+ "fields": [
+  {
+   "fieldname": "webhook_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Webhook Type",
+   "options": "\nGeo Data\nTrip Data\nVehicle Data\nDTC Data\nAlert Log",
+   "reqd": 1
+  },
+  {
+   "default": "Pending",
+   "fieldname": "processing_status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Processing Status",
+   "options": "Pending\nSuccess\nIgnored\nFailed",
+   "read_only": 1
+  },
+  {
+   "fieldname": "received_on",
+   "fieldtype": "Datetime",
+   "in_list_view": 1,
+   "label": "Received On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ak1",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "entity",
+   "fieldtype": "Data",
+   "label": "Entity",
+   "read_only": 1
+  },
+  {
+   "fieldname": "action",
+   "fieldtype": "Data",
+   "label": "Action",
+   "read_only": 1
+  },
+  {
+   "fieldname": "event_time",
+   "fieldtype": "Datetime",
+   "label": "Event Time",
+   "read_only": 1
+  },
+  {
+   "fieldname": "request_refid",
+   "fieldtype": "Data",
+   "label": "Request Ref ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "references_section",
+   "fieldtype": "Section Break",
+   "label": "References"
+  },
+  {
+   "fieldname": "vehicle",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Vehicle",
+   "options": "Vehicle",
+   "read_only": 1
+  },
+  {
+   "fieldname": "trip",
+   "fieldtype": "Link",
+   "label": "Trip",
+   "options": "Trip",
+   "read_only": 1
+  },
+  {
+   "fieldname": "vehicle_plate",
+   "fieldtype": "Data",
+   "label": "Vehicle Plate",
+   "read_only": 1
+  },
+  {
+   "fieldname": "provider_id",
+   "fieldtype": "Data",
+   "label": "Provider Record ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "response_message",
+   "fieldtype": "Small Text",
+   "label": "Response Message",
+   "read_only": 1
+  },
+  {
+   "fieldname": "error_message",
+   "fieldtype": "Small Text",
+   "label": "Error Message",
+   "read_only": 1
+  },
+  {
+   "fieldname": "headers_json",
+   "fieldtype": "Code",
+   "label": "Headers JSON",
+   "options": "JSON",
+   "read_only": 1
+  },
+  {
+   "fieldname": "payload_json",
+   "fieldtype": "Code",
+   "label": "Payload JSON",
+   "options": "JSON",
+   "read_only": 1
+  }
+ ],
+ "links": [],
+ "modified": "2026-03-29 12:05:00.000000",
+ "modified_by": "Administrator",
+ "module": "Simple Transport",
+ "name": "GPS Webhook Log",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "search_fields": "vehicle_plate,provider_id,request_refid,vehicle",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "vehicle_plate"
+}

@@ -1,0 +1,421 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "autoname": "naming_series:",
+ "creation": "2026-03-28 10:00:00.000000",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "naming_series",
+  "status",
+  "company",
+  "references_section",
+  "lorry_receipt",
+  "customer",
+  "sales_invoice",
+  "operation_manager",
+  "route_section",
+  "route_master",
+  "loading_point",
+  "unloading_point",
+  "route_column_break",
+  "distance_km",
+  "current_location",
+  "st_gps_trip_id",
+  "st_last_gps_sync_on",
+  "route_notes",
+  "lorry_receipt_section",
+  "consignor_name",
+  "consignor_contact_no",
+  "consignor_address",
+  "lorry_receipt_column_break",
+  "consignee_name",
+  "consignee_contact_no",
+  "consignee_address",
+  "goods_condition",
+  "package_count",
+  "loading_supervisor_name",
+  "dispatch_section",
+  "vehicle",
+  "driver",
+  "vehicle_capacity_mt",
+  "dispatch_column_break",
+  "dispatch_date",
+  "expected_arrival_date",
+  "actual_start_datetime",
+  "actual_end_datetime",
+  "st_gps_distance_km",
+  "st_gps_duration_ms",
+  "cargo_section",
+  "chemical_name",
+  "planned_tonnage",
+  "delivered_tonnage",
+  "cargo_column_break",
+  "freight_rate_per_mt",
+  "estimated_revenue",
+  "latest_fuel_request",
+  "expenses_section",
+  "expenses",
+  "total_expense_amount",
+  "trip_notes"
+ ],
+ "fields": [
+  {
+   "default": "TRIP-.YYYY.-.#####",
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "LR-.YYYY.-.#####\nTRIP-.YYYY.-.#####",
+   "reqd": 1
+  },
+  {
+   "default": "Planned",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Status",
+   "options": "Planned\nReady for Dispatch\nAt Loading Point\nIn Transit\nAt Unloading Point\nOn Hold\nCompleted\nCancelled",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "lorry_receipt.company",
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "references_section",
+   "fieldtype": "Section Break",
+   "label": "References"
+  },
+  {
+   "fieldname": "lorry_receipt",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Lorry Receipt",
+   "options": "Lorry Receipt",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "lorry_receipt.customer",
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "sales_invoice",
+   "fieldtype": "Link",
+   "label": "Sales Invoice",
+   "options": "Sales Invoice"
+  },
+  {
+   "fetch_from": "lorry_receipt.operation_manager",
+   "fieldname": "operation_manager",
+   "fieldtype": "Link",
+   "label": "Operation Manager",
+   "options": "User"
+  },
+  {
+   "fieldname": "route_section",
+   "fieldtype": "Section Break",
+   "label": "Route"
+  },
+  {
+   "fetch_from": "lorry_receipt.route_master",
+   "fieldname": "route_master",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Route Master",
+   "options": "Route Master",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "route_master.source_location",
+   "fieldname": "loading_point",
+   "fieldtype": "Data",
+   "label": "Loading Point"
+  },
+  {
+   "fetch_from": "route_master.destination_location",
+   "fieldname": "unloading_point",
+   "fieldtype": "Data",
+   "label": "Unloading Point"
+  },
+  {
+   "fieldname": "route_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fetch_from": "route_master.distance_km",
+   "fieldname": "distance_km",
+   "fieldtype": "Float",
+   "label": "Distance (KM)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "current_location",
+   "fieldtype": "Data",
+   "label": "Current Location"
+  },
+  {
+   "fieldname": "st_gps_trip_id",
+   "fieldtype": "Data",
+   "label": "GPS Provider Trip ID",
+   "read_only": 1
+  },
+  {
+   "fieldname": "st_last_gps_sync_on",
+   "fieldtype": "Datetime",
+   "label": "Last GPS Sync On",
+   "read_only": 1
+  },
+  {
+   "fetch_from": "route_master.route_notes",
+   "fieldname": "route_notes",
+   "fieldtype": "Small Text",
+   "label": "Route Notes"
+  },
+  {
+   "fieldname": "lorry_receipt_section",
+   "fieldtype": "Section Break",
+   "label": "Lorry Receipt Details"
+  },
+  {
+   "fieldname": "consignor_name",
+   "fieldtype": "Data",
+   "label": "Consignor Name"
+  },
+  {
+   "fieldname": "consignor_contact_no",
+   "fieldtype": "Data",
+   "label": "Consignor Contact No"
+  },
+  {
+   "fieldname": "consignor_address",
+   "fieldtype": "Small Text",
+   "label": "Consignor Address"
+  },
+  {
+   "fieldname": "lorry_receipt_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "consignee_name",
+   "fieldtype": "Data",
+   "label": "Consignee Name"
+  },
+  {
+   "fieldname": "consignee_contact_no",
+   "fieldtype": "Data",
+   "label": "Consignee Contact No"
+  },
+  {
+   "fieldname": "consignee_address",
+   "fieldtype": "Small Text",
+   "label": "Consignee Address"
+  },
+  {
+   "fieldname": "goods_condition",
+   "fieldtype": "Data",
+   "label": "Goods Condition"
+  },
+  {
+   "fieldname": "package_count",
+   "fieldtype": "Int",
+   "label": "Package Count"
+  },
+  {
+   "fieldname": "loading_supervisor_name",
+   "fieldtype": "Data",
+   "label": "Loading Supervisor"
+  },
+  {
+   "fieldname": "dispatch_section",
+   "fieldtype": "Section Break",
+   "label": "Dispatch"
+  },
+  {
+   "fieldname": "vehicle",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "label": "Vehicle",
+   "options": "Vehicle",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "vehicle.employee",
+   "fieldname": "driver",
+   "fieldtype": "Link",
+   "in_standard_filter": 1,
+   "label": "Driver",
+   "options": "Employee",
+   "reqd": 1
+  },
+  {
+   "fetch_from": "vehicle.st_vehicle_capacity_mt",
+   "fieldname": "vehicle_capacity_mt",
+   "fieldtype": "Float",
+   "label": "Vehicle Capacity (MT)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "dispatch_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "dispatch_date",
+   "fieldtype": "Date",
+   "label": "Dispatch Date",
+   "reqd": 1
+  },
+  {
+   "fieldname": "expected_arrival_date",
+   "fieldtype": "Date",
+   "label": "Expected Arrival Date"
+  },
+  {
+   "fieldname": "actual_start_datetime",
+   "fieldtype": "Datetime",
+   "label": "Actual Start Time"
+  },
+  {
+   "fieldname": "actual_end_datetime",
+   "fieldtype": "Datetime",
+   "label": "Actual End Time"
+  },
+  {
+   "fieldname": "st_gps_distance_km",
+   "fieldtype": "Float",
+   "label": "GPS Distance",
+   "read_only": 1
+  },
+  {
+   "fieldname": "st_gps_duration_ms",
+   "fieldtype": "Int",
+   "label": "GPS Duration (ms)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "cargo_section",
+   "fieldtype": "Section Break",
+   "label": "Cargo & Revenue"
+  },
+  {
+   "fetch_from": "lorry_receipt.goods_description",
+   "fieldname": "chemical_name",
+   "fieldtype": "Link",
+   "label": "Material",
+   "options": "Material"
+  },
+  {
+   "fieldname": "planned_tonnage",
+   "fieldtype": "Float",
+   "label": "Assigned Tonnage (MT)",
+   "reqd": 1
+  },
+  {
+   "fieldname": "delivered_tonnage",
+   "fieldtype": "Float",
+   "label": "Delivered Tonnage (MT)"
+  },
+  {
+   "fieldname": "cargo_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "freight_rate_per_mt",
+   "fieldtype": "Currency",
+   "label": "Freight Rate per MT"
+  },
+  {
+   "fieldname": "estimated_revenue",
+   "fieldtype": "Currency",
+   "label": "Estimated Revenue",
+   "read_only": 1
+  },
+  {
+   "fieldname": "latest_fuel_request",
+   "fieldtype": "Link",
+   "label": "Latest Fuel Request",
+   "options": "Fuel Request",
+   "read_only": 1
+  },
+  {
+   "fieldname": "expenses_section",
+   "fieldtype": "Section Break",
+   "label": "Trip Expenses"
+  },
+  {
+   "fieldname": "expenses",
+   "fieldtype": "Table",
+   "label": "Expenses",
+   "options": "Trip Expense"
+  },
+  {
+   "fieldname": "total_expense_amount",
+   "fieldtype": "Currency",
+   "label": "Total Expense Amount",
+   "read_only": 1
+  },
+  {
+   "fieldname": "trip_notes",
+   "fieldtype": "Small Text",
+   "label": "Trip Notes"
+  }
+ ],
+ "links": [],
+ "modified": "2026-03-28 10:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Simple Transport",
+ "name": "Trip",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Fleet Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Sales Manager",
+   "share": 1
+  }
+ ],
+ "search_fields": "lorry_receipt,vehicle,driver,customer,chemical_name",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "title_field": "vehicle",
+ "track_changes": 1
+}

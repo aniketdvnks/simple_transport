@@ -1,0 +1,114 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-03-29 09:30:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "trip",
+  "lorry_receipt",
+  "lr_date",
+  "vehicle_no",
+  "from_location",
+  "to_location",
+  "material",
+  "gate_pass_no",
+  "weight_mt",
+  "rate_per_mt",
+  "amount"
+ ],
+ "fields": [
+  {
+   "fieldname": "trip",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Trip",
+   "options": "Trip",
+   "reqd": 1
+  },
+  {
+   "fieldname": "lorry_receipt",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Lorry Receipt",
+   "options": "Lorry Receipt",
+   "read_only": 1
+  },
+  {
+   "fieldname": "lr_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "LR Date",
+   "read_only": 1
+  },
+  {
+   "fieldname": "vehicle_no",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Vehicle No",
+   "read_only": 1
+  },
+  {
+   "fieldname": "from_location",
+   "fieldtype": "Data",
+   "label": "From",
+   "read_only": 1
+  },
+  {
+   "fieldname": "to_location",
+   "fieldtype": "Data",
+   "label": "To",
+   "read_only": 1
+  },
+  {
+   "fieldname": "material",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Material",
+   "read_only": 1
+  },
+  {
+   "fieldname": "gate_pass_no",
+   "fieldtype": "Data",
+   "label": "Gate Pass No",
+   "read_only": 1
+  },
+  {
+   "fieldname": "weight_mt",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Weight (MT)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rate_per_mt",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Rate",
+   "read_only": 1
+  },
+  {
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "in_list_view": 1,
+   "label": "Amount",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-03-29 09:30:00.000000",
+ "modified_by": "Administrator",
+ "module": "Simple Transport",
+ "name": "Sales Invoice Trip Detail",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

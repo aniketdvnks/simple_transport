@@ -1,0 +1,194 @@
+{
+ "actions": [],
+ "creation": "2026-03-29 12:00:00.000000",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "integration_section",
+  "enabled",
+  "log_webhook_payloads",
+  "processing_column_break",
+  "enforce_basic_auth",
+  "auto_update_vehicle_data",
+  "auto_update_trip_progress",
+  "authentication_section",
+  "webhook_username",
+  "webhook_password",
+  "endpoints_section",
+  "geo_endpoint_path",
+  "trip_endpoint_path",
+  "endpoints_column_break",
+  "vehicle_endpoint_path",
+  "dtc_endpoint_path",
+  "alert_endpoint_path",
+  "activity_section",
+  "last_geo_on",
+  "last_trip_on",
+  "last_vehicle_on",
+  "activity_column_break",
+  "last_dtc_on",
+  "last_alert_on"
+ ],
+ "fields": [
+  {
+   "fieldname": "integration_section",
+   "fieldtype": "Section Break",
+   "label": "Integration Control"
+  },
+  {
+   "default": "0",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enable GPS Webhooks"
+  },
+  {
+   "default": "1",
+   "fieldname": "log_webhook_payloads",
+   "fieldtype": "Check",
+   "label": "Log Webhook Payloads"
+  },
+  {
+   "fieldname": "processing_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "enforce_basic_auth",
+   "fieldtype": "Check",
+   "label": "Enforce Basic Auth"
+  },
+  {
+   "default": "1",
+   "fieldname": "auto_update_vehicle_data",
+   "fieldtype": "Check",
+   "label": "Auto Update Vehicle Live Data"
+  },
+  {
+   "default": "1",
+   "fieldname": "auto_update_trip_progress",
+   "fieldtype": "Check",
+   "label": "Auto Update Active Trip Progress"
+  },
+  {
+   "fieldname": "authentication_section",
+   "fieldtype": "Section Break",
+   "label": "Authentication"
+  },
+  {
+   "depends_on": "eval:doc.enforce_basic_auth==1",
+   "fieldname": "webhook_username",
+   "fieldtype": "Data",
+   "label": "Webhook Username"
+  },
+  {
+   "depends_on": "eval:doc.enforce_basic_auth==1",
+   "fieldname": "webhook_password",
+   "fieldtype": "Password",
+   "label": "Webhook Password"
+  },
+  {
+   "fieldname": "endpoints_section",
+   "fieldtype": "Section Break",
+   "label": "Webhook Endpoints"
+  },
+  {
+   "fieldname": "geo_endpoint_path",
+   "fieldtype": "Data",
+   "label": "Geo Endpoint",
+   "read_only": 1
+  },
+  {
+   "fieldname": "trip_endpoint_path",
+   "fieldtype": "Data",
+   "label": "Trip Endpoint",
+   "read_only": 1
+  },
+  {
+   "fieldname": "endpoints_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "vehicle_endpoint_path",
+   "fieldtype": "Data",
+   "label": "Vehicle Endpoint",
+   "read_only": 1
+  },
+  {
+   "fieldname": "dtc_endpoint_path",
+   "fieldtype": "Data",
+   "label": "DTC Endpoint",
+   "read_only": 1
+  },
+  {
+   "fieldname": "alert_endpoint_path",
+   "fieldtype": "Data",
+   "label": "Alert Endpoint",
+   "read_only": 1
+  },
+  {
+   "fieldname": "activity_section",
+   "fieldtype": "Section Break",
+   "label": "Last Activity"
+  },
+  {
+   "fieldname": "last_geo_on",
+   "fieldtype": "Datetime",
+   "label": "Last Geo On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_trip_on",
+   "fieldtype": "Datetime",
+   "label": "Last Trip On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_vehicle_on",
+   "fieldtype": "Datetime",
+   "label": "Last Vehicle On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "activity_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "last_dtc_on",
+   "fieldtype": "Datetime",
+   "label": "Last DTC On",
+   "read_only": 1
+  },
+  {
+   "fieldname": "last_alert_on",
+   "fieldtype": "Datetime",
+   "label": "Last Alert On",
+   "read_only": 1
+  }
+ ],
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-03-29 12:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Simple Transport",
+ "name": "GPS Integration Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
