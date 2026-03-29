@@ -7,11 +7,15 @@ from simple_transport.access import (
 	get_assigned_vehicle_condition,
 	get_assigned_vehicle_names,
 	get_driver_employee,
+	has_transport_full_access,
 	is_operations_manager,
 )
 
 
 def get_lorry_receipt_permission_query_conditions(user):
+	if has_transport_full_access(user):
+		return None
+
 	if condition := get_assigned_vehicle_condition(user, "`tabLorry Receipt`.`vehicle`"):
 		return condition
 
@@ -23,6 +27,9 @@ def get_lorry_receipt_permission_query_conditions(user):
 
 
 def get_trip_permission_query_conditions(user):
+	if has_transport_full_access(user):
+		return None
+
 	if condition := get_assigned_vehicle_condition(user, "`tabTrip`.`vehicle`"):
 		return condition
 
@@ -34,6 +41,9 @@ def get_trip_permission_query_conditions(user):
 
 
 def get_fuel_request_permission_query_conditions(user):
+	if has_transport_full_access(user):
+		return None
+
 	if condition := get_assigned_vehicle_condition(user, "`tabFuel Request`.`vehicle`"):
 		return condition
 
@@ -45,6 +55,9 @@ def get_fuel_request_permission_query_conditions(user):
 
 
 def get_vehicle_permission_query_conditions(user):
+	if has_transport_full_access(user):
+		return None
+
 	if condition := get_assigned_vehicle_condition(user, "`tabVehicle`.`name`"):
 		return condition
 
@@ -59,6 +72,9 @@ def get_vehicle_permission_query_conditions(user):
 
 
 def get_employee_permission_query_conditions(user):
+	if has_transport_full_access(user):
+		return None
+
 	if condition := get_assigned_driver_condition(user, "`tabEmployee`.`name`"):
 		return condition
 
@@ -70,12 +86,18 @@ def get_employee_permission_query_conditions(user):
 
 
 def get_vehicle_assignment_permission_query_conditions(user):
+	if has_transport_full_access(user):
+		return None
+
 	if is_operations_manager(user):
 		return f"`tabVehicle Assignment`.`operation_manager` = {frappe.db.escape(user)}"
 	return None
 
 
 def get_gps_webhook_log_permission_query_conditions(user):
+	if has_transport_full_access(user):
+		return None
+
 	if condition := get_assigned_vehicle_condition(user, "`tabGPS Webhook Log`.`vehicle`"):
 		return condition
 	return None
@@ -83,6 +105,9 @@ def get_gps_webhook_log_permission_query_conditions(user):
 
 def lorry_receipt_has_permission(doc, user=None, ptype=None):
 	user = user or frappe.session.user
+
+	if has_transport_full_access(user):
+		return True
 
 	if is_operations_manager(user):
 		return doc.vehicle in set(get_assigned_vehicle_names(user))
@@ -97,6 +122,9 @@ def lorry_receipt_has_permission(doc, user=None, ptype=None):
 def trip_has_permission(doc, user=None, ptype=None):
 	user = user or frappe.session.user
 
+	if has_transport_full_access(user):
+		return True
+
 	if is_operations_manager(user):
 		return doc.vehicle in set(get_assigned_vehicle_names(user))
 
@@ -110,6 +138,9 @@ def trip_has_permission(doc, user=None, ptype=None):
 def fuel_request_has_permission(doc, user=None, ptype=None):
 	user = user or frappe.session.user
 
+	if has_transport_full_access(user):
+		return True
+
 	if is_operations_manager(user):
 		return doc.vehicle in set(get_assigned_vehicle_names(user))
 
@@ -122,6 +153,9 @@ def fuel_request_has_permission(doc, user=None, ptype=None):
 
 def vehicle_has_permission(doc, user=None, ptype=None):
 	user = user or frappe.session.user
+
+	if has_transport_full_access(user):
+		return True
 
 	if is_operations_manager(user):
 		return doc.name in set(get_assigned_vehicle_names(user))
@@ -137,6 +171,9 @@ def vehicle_has_permission(doc, user=None, ptype=None):
 
 def employee_has_permission(doc, user=None, ptype=None):
 	user = user or frappe.session.user
+
+	if has_transport_full_access(user):
+		return True
 
 	if is_operations_manager(user):
 		assigned_vehicles = get_assigned_vehicle_names(user)
@@ -159,6 +196,10 @@ def employee_has_permission(doc, user=None, ptype=None):
 
 def vehicle_assignment_has_permission(doc, user=None, ptype=None):
 	user = user or frappe.session.user
+
+	if has_transport_full_access(user):
+		return True
+
 	if is_operations_manager(user):
 		return doc.operation_manager == user
 	return None
@@ -166,6 +207,9 @@ def vehicle_assignment_has_permission(doc, user=None, ptype=None):
 
 def gps_webhook_log_has_permission(doc, user=None, ptype=None):
 	user = user or frappe.session.user
+
+	if has_transport_full_access(user):
+		return True
 
 	if is_operations_manager(user):
 		return doc.vehicle in set(get_assigned_vehicle_names(user))

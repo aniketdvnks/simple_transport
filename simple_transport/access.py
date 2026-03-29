@@ -5,10 +5,19 @@ import frappe
 from simple_transport.bootstrap import ROLE_DRIVER, ROLE_OPERATIONS
 
 
+def has_transport_full_access(user=None) -> bool:
+	user = user or frappe.session.user
+	if user in {"Administrator"}:
+		return True
+	if user in {"Guest"}:
+		return False
+	return "System Manager" in frappe.get_roles(user)
+
+
 def get_driver_employee(user=None):
 	user = user or frappe.session.user
 
-	if user in {"Administrator", "Guest"}:
+	if user in {"Guest"} or has_transport_full_access(user):
 		return None
 
 	if ROLE_DRIVER not in frappe.get_roles(user):
@@ -26,6 +35,9 @@ def is_operations_manager(user=None) -> bool:
 
 def get_assigned_vehicle_names(user=None) -> list[str]:
 	user = user or frappe.session.user
+
+	if has_transport_full_access(user):
+		return []
 
 	if not is_operations_manager(user):
 		return []
@@ -47,6 +59,9 @@ def get_assigned_vehicle_names(user=None) -> list[str]:
 
 
 def get_assigned_vehicle_condition(user: str, vehicle_field: str) -> str | None:
+	if has_transport_full_access(user):
+		return None
+
 	if not is_operations_manager(user):
 		return None
 
@@ -68,6 +83,9 @@ def is_vehicle_assigned_to_manager(vehicle: str, user: str | None = None) -> boo
 
 
 def get_assigned_driver_condition(user: str, employee_field: str) -> str | None:
+	if has_transport_full_access(user):
+		return None
+
 	if not is_operations_manager(user):
 		return None
 
