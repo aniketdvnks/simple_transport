@@ -1,0 +1,141 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"cujtOpS1aD\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">ST Driver Hub</span>\",\"col\":12}},{\"id\":\"S6s7TwU5fy\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"My Trips\",\"col\":3}},{\"id\":\"tDjAmysPS5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Fuel Requests\",\"col\":3}},{\"id\":\"8eVcEbFz5S\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"My Vehicle\",\"col\":3}},{\"id\":\"nkVLwpaOOk\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"My Employee Card\",\"col\":3}},{\"id\":\"Xvw2KkhwuT\",\"type\":\"card\",\"data\":{\"card_name\":\"Driver Desk\",\"col\":6}},{\"id\":\"H3IOfoQHmB\",\"type\":\"card\",\"data\":{\"card_name\":\"Profile\",\"col\":6}}]",
+ "creation": "2026-03-28 11:46:42.824359",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "stock",
+ "idx": 0,
+ "indicator_color": "blue",
+ "is_hidden": 0,
+ "label": "ST Driver Hub",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Driver Desk",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Lorry Receipt",
+   "link_count": 0,
+   "link_to": "Lorry Receipt",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Trip",
+   "link_count": 0,
+   "link_to": "Trip",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Fuel Request",
+   "link_count": 0,
+   "link_to": "Fuel Request",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Route Master",
+   "link_count": 0,
+   "link_to": "Route Master",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Profile",
+   "link_count": 2,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Vehicle",
+   "link_count": 0,
+   "link_to": "Vehicle",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Employee",
+   "link_count": 0,
+   "link_to": "Employee",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-03-30 10:13:42.617817",
+ "modified_by": "Administrator",
+ "module": "Simple Transport",
+ "name": "ST Driver Hub",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {
+   "role": "ST Driver"
+  }
+ ],
+ "sequence_id": 12.0,
+ "shortcuts": [
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "My Trips",
+   "link_to": "Trip",
+   "type": "DocType"
+  },
+  {
+   "color": "Orange",
+   "doc_view": "List",
+   "label": "Fuel Requests",
+   "link_to": "Fuel Request",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "My Vehicle",
+   "link_to": "Vehicle",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "My Employee Card",
+   "link_to": "Employee",
+   "type": "DocType"
+  }
+ ],
+ "title": "ST Driver Hub"
+}

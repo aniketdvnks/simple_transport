@@ -2,16 +2,17 @@
  "actions": [],
  "allow_import": 1,
  "autoname": "naming_series:",
- "creation": "2026-03-28 10:00:00.000000",
+ "creation": "2026-03-28 10:00:00",
  "doctype": "DocType",
  "document_type": "Document",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "naming_series",
-  "status",
   "company",
+  "column_break_iubu",
   "request_date",
+  "status",
   "reference_section",
   "trip",
   "lorry_receipt",
@@ -22,10 +23,11 @@
   "route_master",
   "distance_km",
   "request_section",
-  "fuel_rate_per_liter",
   "requested_qty_liters",
-  "requested_amount",
+  "fuel_rate_per_liter",
+  "column_break_cdeh",
   "reason",
+  "requested_amount",
   "approval_section",
   "approval_status",
   "approved_qty_liters",
@@ -39,7 +41,8 @@
   "disbursed_amount",
   "disbursement_column_break",
   "disbursed_on",
-  "remarks"
+  "remarks",
+  "amended_from"
  ],
  "fields": [
   {
@@ -249,11 +252,29 @@
    "fieldname": "remarks",
    "fieldtype": "Small Text",
    "label": "Remarks"
+  },
+  {
+   "fieldname": "column_break_iubu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_cdeh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Fuel Request",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
   }
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2026-03-28 10:00:00.000000",
+ "modified": "2026-03-30 10:10:58.102363",
  "modified_by": "Administrator",
  "module": "Simple Transport",
  "name": "Fuel Request",
@@ -300,9 +321,11 @@
    "write": 1
   }
  ],
+ "row_format": "Dynamic",
  "search_fields": "trip,lorry_receipt,vehicle,customer",
  "sort_field": "modified",
  "sort_order": "DESC",
+ "states": [],
  "title_field": "trip",
  "track_changes": 1
 }

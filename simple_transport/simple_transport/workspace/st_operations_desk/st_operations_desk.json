@@ -1,0 +1,297 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"1sd9t-zbre\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">ST Operations Desk</span>\",\"col\":12}},{\"id\":\"jVaaWUB_3I\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Issued LRs\",\"col\":3}},{\"id\":\"pUdxxuVfO1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending Fuel Approval\",\"col\":3}},{\"id\":\"n7aQrx9tsz\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"GPS Logs\",\"col\":3}},{\"id\":\"Inm74VLH-F\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Lorry Receipt\",\"col\":3}},{\"id\":\"8pSwkENmc4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Trip\",\"col\":3}},{\"id\":\"WRemuBphwo\",\"type\":\"card\",\"data\":{\"card_name\":\"GPS Monitoring\",\"col\":3}},{\"id\":\"1vdKCy0ccx\",\"type\":\"card\",\"data\":{\"card_name\":\"Transport Execution\",\"col\":3}},{\"id\":\"X4BLaT0Xei\",\"type\":\"card\",\"data\":{\"card_name\":\"Masters\",\"col\":3}},{\"id\":\"1LbapxNozH\",\"type\":\"card\",\"data\":{\"card_name\":\"Maintenance\",\"col\":3}},{\"id\":\"cVLEbjgYji\",\"type\":\"card\",\"data\":{\"card_name\":\"Inventory\",\"col\":3}}]",
+ "creation": "2026-03-28 11:46:42.812444",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "branch",
+ "idx": 0,
+ "indicator_color": "orange",
+ "is_hidden": 0,
+ "label": "ST Operations Desk",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "GPS Monitoring",
+   "link_count": 2,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "GPS Webhook Log",
+   "link_count": 0,
+   "link_to": "GPS Webhook Log",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "GPS Integration Settings",
+   "link_count": 0,
+   "link_to": "GPS Integration Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Transport Execution",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Lorry Receipt",
+   "link_count": 0,
+   "link_to": "Lorry Receipt",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Trip",
+   "link_count": 0,
+   "link_to": "Trip",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Fuel Request",
+   "link_count": 0,
+   "link_to": "Fuel Request",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales Invoice",
+   "link_count": 0,
+   "link_to": "Sales Invoice",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Masters",
+   "link_count": 6,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Route Master",
+   "link_count": 0,
+   "link_to": "Route Master",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Material",
+   "link_count": 0,
+   "link_to": "Material",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Vehicle Assignment",
+   "link_count": 0,
+   "link_to": "Vehicle Assignment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Vehicle",
+   "link_count": 0,
+   "link_to": "Vehicle",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Employee",
+   "link_count": 0,
+   "link_to": "Employee",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Customer",
+   "link_count": 0,
+   "link_to": "Customer",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Maintenance",
+   "link_count": 3,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Asset Maintenance",
+   "link_count": 0,
+   "link_to": "Asset Maintenance",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Asset Repair",
+   "link_count": 0,
+   "link_to": "Asset Repair",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Stock Entry",
+   "link_count": 0,
+   "link_to": "Stock Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Inventory",
+   "link_count": 3,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Item",
+   "link_count": 0,
+   "link_to": "Item",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Warehouse",
+   "link_count": 0,
+   "link_to": "Warehouse",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Purchase Receipt",
+   "link_count": 0,
+   "link_to": "Purchase Receipt",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-03-30 10:13:31.225924",
+ "modified_by": "Administrator",
+ "module": "Simple Transport",
+ "name": "ST Operations Desk",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {
+   "role": "ST Operation Manager"
+  }
+ ],
+ "sequence_id": 11.0,
+ "shortcuts": [
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "Issued LRs",
+   "link_to": "Lorry Receipt",
+   "stats_filter": "{\"status\":[\"=\",\"Issued\"]}",
+   "type": "DocType"
+  },
+  {
+   "color": "Orange",
+   "doc_view": "List",
+   "label": "Pending Fuel Approval",
+   "link_to": "Fuel Request",
+   "stats_filter": "{\"status\":[\"=\",\"Pending Approval\"]}",
+   "type": "DocType"
+  },
+  {
+   "color": "Teal",
+   "doc_view": "List",
+   "label": "GPS Logs",
+   "link_to": "GPS Webhook Log",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "doc_view": "New",
+   "label": "New Lorry Receipt",
+   "link_to": "Lorry Receipt",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "doc_view": "New",
+   "label": "New Trip",
+   "link_to": "Trip",
+   "type": "DocType"
+  }
+ ],
+ "title": "ST Operations Desk"
+}

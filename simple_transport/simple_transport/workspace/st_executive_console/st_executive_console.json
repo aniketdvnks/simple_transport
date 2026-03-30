@@ -1,0 +1,287 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"zaZyzjnFS0\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">ST Executive Console</span>\",\"col\":12}},{\"id\":\"04MkjeaPoS\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending Fuel Approval\",\"col\":3}},{\"id\":\"JQ1unYgezi\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Issued LRs\",\"col\":3}},{\"id\":\"o4XGTc8We9\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"GPS Webhook Logs\",\"col\":3}},{\"id\":\"D6izAs2zbl\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Trips\",\"col\":3}},{\"id\":\"qpp6mz_HKJ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Billing\",\"col\":3}},{\"id\":\"FX2huiNB5h\",\"type\":\"card\",\"data\":{\"card_name\":\"GPS Control\",\"col\":3}},{\"id\":\"kuGHxgQCx2\",\"type\":\"card\",\"data\":{\"card_name\":\"Approvals\",\"col\":3}},{\"id\":\"D7I4-yXVCT\",\"type\":\"card\",\"data\":{\"card_name\":\"Dispatch & Billing\",\"col\":3}},{\"id\":\"paHBJ8S5X4\",\"type\":\"card\",\"data\":{\"card_name\":\"Fleet & Maintenance\",\"col\":3}},{\"id\":\"JhCObWy6j5\",\"type\":\"card\",\"data\":{\"card_name\":\"Inventory\",\"col\":3}}]",
+ "creation": "2026-03-28 11:46:42.790834",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "change",
+ "idx": 0,
+ "indicator_color": "green",
+ "is_hidden": 0,
+ "label": "ST Executive Console",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "GPS Control",
+   "link_count": 2,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "GPS Integration Settings",
+   "link_count": 0,
+   "link_to": "GPS Integration Settings",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "GPS Webhook Log",
+   "link_count": 0,
+   "link_to": "GPS Webhook Log",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Approvals",
+   "link_count": 3,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Fuel Request",
+   "link_count": 0,
+   "link_to": "Fuel Request",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Lorry Receipt",
+   "link_count": 0,
+   "link_to": "Lorry Receipt",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Trip",
+   "link_count": 0,
+   "link_to": "Trip",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Dispatch & Billing",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Vehicle Assignment",
+   "link_count": 0,
+   "link_to": "Vehicle Assignment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales Invoice",
+   "link_count": 0,
+   "link_to": "Sales Invoice",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Customer",
+   "link_count": 0,
+   "link_to": "Customer",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Material",
+   "link_count": 0,
+   "link_to": "Material",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Fleet & Maintenance",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Vehicle",
+   "link_count": 0,
+   "link_to": "Vehicle",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Asset",
+   "link_count": 0,
+   "link_to": "Asset",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Asset Maintenance",
+   "link_count": 0,
+   "link_to": "Asset Maintenance",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Asset Repair",
+   "link_count": 0,
+   "link_to": "Asset Repair",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Inventory",
+   "link_count": 4,
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Item",
+   "link_count": 0,
+   "link_to": "Item",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Warehouse",
+   "link_count": 0,
+   "link_to": "Warehouse",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Purchase Receipt",
+   "link_count": 0,
+   "link_to": "Purchase Receipt",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Stock Entry",
+   "link_count": 0,
+   "link_to": "Stock Entry",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-03-30 10:13:21.225546",
+ "modified_by": "Administrator",
+ "module": "Simple Transport",
+ "name": "ST Executive Console",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "roles": [
+  {
+   "role": "ST C-Level Executive"
+  }
+ ],
+ "sequence_id": 10.0,
+ "shortcuts": [
+  {
+   "color": "Orange",
+   "doc_view": "List",
+   "label": "Pending Fuel Approval",
+   "link_to": "Fuel Request",
+   "stats_filter": "{\"status\":[\"=\",\"Pending Approval\"]}",
+   "type": "DocType"
+  },
+  {
+   "color": "Blue",
+   "doc_view": "List",
+   "label": "Issued LRs",
+   "link_to": "Lorry Receipt",
+   "stats_filter": "{\"status\":[\"=\",\"Issued\"]}",
+   "type": "DocType"
+  },
+  {
+   "color": "Teal",
+   "doc_view": "List",
+   "label": "GPS Webhook Logs",
+   "link_to": "GPS Webhook Log",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Trips",
+   "link_to": "Trip",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Billing",
+   "link_to": "Sales Invoice",
+   "type": "DocType"
+  }
+ ],
+ "title": "ST Executive Console"
+}
