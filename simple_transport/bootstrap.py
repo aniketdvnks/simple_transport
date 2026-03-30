@@ -51,6 +51,7 @@ ROLE_DEFINITIONS = {
 				"Lorry Receipt": {"read": 1, "report": 1, "export": 1, "print": 1},
 				"Route Master": {"read": 1, "report": 1, "export": 1, "print": 1},
 				"Material": {"read": 1, "report": 1, "export": 1, "print": 1},
+				"Driver Assignment": {"read": 1, "report": 1, "export": 1, "print": 1},
 				"Trip": {"read": 1, "report": 1, "export": 1, "print": 1},
 				"Fuel Request": {"read": 1, "write": 1, "report": 1, "export": 1, "print": 1},
 				"Sales Invoice": {"read": 1, "create": 1, "write": 1, "submit": 1, "cancel": 1, "amend": 1, "report": 1, "export": 1, "print": 1},
@@ -130,6 +131,7 @@ ROLE_DEFINITIONS = {
 						"Dispatch & Billing",
 						[
 							("Vehicle Assignment", "DocType"),
+							("Driver Assignment", "DocType"),
 							("Sales Invoice", "DocType"),
 							("Customer", "DocType"),
 							("Material", "DocType"),
@@ -158,11 +160,12 @@ ROLE_DEFINITIONS = {
 	},
 	ROLE_OPERATIONS: {
 		"description": "Plans fleet allocation, creates lorry receipts, starts trips, and raises fuel requests.",
-		"note": "Operations users can only access vehicles assigned through Vehicle Assignment, and GPS webhook logs are limited to those mapped vehicles.",
+		"note": "Operations users can only access vehicles assigned through Vehicle Assignment, and Driver Assignment follows the same assigned-vehicle scope.",
 			"permissions": {
 				"Page": {"read": 1},
 				"GPS Integration Settings": {"read": 1, "print": 1},
 				"GPS Webhook Log": {"read": 1, "report": 1, "export": 1, "print": 1},
+				"Driver Assignment": {"read": 1, "create": 1, "write": 1, "submit": 1, "cancel": 1, "amend": 1, "report": 1, "export": 1, "print": 1},
 				"Lorry Receipt": {"read": 1, "create": 1, "write": 1, "submit": 1, "cancel": 1, "amend": 1, "report": 1, "export": 1, "print": 1},
 				"Route Master": {"read": 1, "create": 1, "write": 1, "report": 1, "export": 1, "print": 1},
 				"Material": {"read": 1, "create": 1, "write": 1, "report": 1, "export": 1, "print": 1},
@@ -233,6 +236,13 @@ ROLE_DEFINITIONS = {
 				{
 					"color": "Green",
 					"doc_view": "New",
+					"label": "New Driver Assignment",
+					"link_to": "Driver Assignment",
+					"type": "DocType",
+				},
+				{
+					"color": "Green",
+					"doc_view": "New",
 					"label": "New Lorry Receipt",
 					"link_to": "Lorry Receipt",
 						"type": "DocType",
@@ -256,6 +266,7 @@ ROLE_DEFINITIONS = {
 				(
 					"Transport Execution",
 					[
+						("Driver Assignment", "DocType"),
 						("Lorry Receipt", "DocType"),
 						("Trip", "DocType"),
 							("Fuel Request", "DocType"),
@@ -268,6 +279,7 @@ ROLE_DEFINITIONS = {
 							("Route Master", "DocType"),
 							("Material", "DocType"),
 							("Vehicle Assignment", "DocType"),
+							("Driver Assignment", "DocType"),
 							("Vehicle", "DocType"),
 							("Employee", "DocType"),
 						("Customer", "DocType"),
@@ -299,6 +311,7 @@ ROLE_DEFINITIONS = {
 			"Page": {"read": 1},
 			"Lorry Receipt": {"read": 1, "report": 1, "print": 1},
 			"Route Master": {"read": 1, "report": 1, "print": 1},
+			"Driver Assignment": {"read": 1, "report": 1, "print": 1},
 			"Trip": {"read": 1, "report": 1, "print": 1},
 			"Fuel Request": {"read": 1, "report": 1, "print": 1},
 			"Vehicle": {"read": 1, "print": 1},
@@ -327,6 +340,13 @@ ROLE_DEFINITIONS = {
 				{
 					"color": "Grey",
 					"doc_view": "List",
+					"label": "My Assignments",
+					"link_to": "Driver Assignment",
+					"type": "DocType",
+				},
+				{
+					"color": "Grey",
+					"doc_view": "List",
 					"label": "My Vehicle",
 					"link_to": "Vehicle",
 					"type": "DocType",
@@ -343,6 +363,7 @@ ROLE_DEFINITIONS = {
 				(
 						"Driver Desk",
 						[
+							("Driver Assignment", "DocType"),
 							("Lorry Receipt", "DocType"),
 							("Trip", "DocType"),
 							("Fuel Request", "DocType"),

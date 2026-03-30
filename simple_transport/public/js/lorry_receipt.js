@@ -28,7 +28,7 @@ frappe.ui.form.on("Lorry Receipt", {
 				frappe.new_doc("Trip", {
 					lorry_receipt: frm.doc.name,
 				});
-			}, __("Create"));
+			},);
 		}
 
 		if (frm.doc.trip) {

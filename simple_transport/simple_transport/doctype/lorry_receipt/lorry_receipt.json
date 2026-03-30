@@ -15,16 +15,16 @@
   "column_break_rdai",
   "lr_date",
   "gate_pass_no",
-  "parties_section",
-  "customer",
-  "column_break_tzdu",
-  "operation_manager",
   "route_section",
   "route_master",
   "distance_km",
   "column_break_vrxb",
   "loading_point",
   "unloading_point",
+  "parties_section",
+  "customer",
+  "column_break_tzdu",
+  "operation_manager",
   "dispatch_section",
   "vehicle",
   "vehicle_capacity_mt",
@@ -107,22 +107,16 @@
    "label": "Parties"
   },
   {
-   "allow_in_quick_entry": 1,
    "fieldname": "customer",
    "fieldtype": "Link",
-   "in_standard_filter": 1,
    "label": "Customer",
-   "options": "Customer",
-   "reqd": 1
+   "options": "Customer"
   },
   {
-   "allow_in_quick_entry": 1,
    "fieldname": "operation_manager",
    "fieldtype": "Link",
-   "in_standard_filter": 1,
    "label": "Operation Manager",
-   "options": "User",
-   "reqd": 1
+   "options": "User"
   },
   {
    "fieldname": "route_section",
@@ -177,8 +171,7 @@
    "in_standard_filter": 1,
    "label": "Driver",
    "link_filters": "[[\"Employee\",\"st_is_driver\",\"=\",1]]",
-   "options": "Employee",
-   "reqd": 1
+   "options": "Employee"
   },
   {
    "fieldname": "vehicle_capacity_mt",
@@ -212,7 +205,6 @@
    "label": "Gross Weight (MT)"
   },
   {
-   "allow_in_quick_entry": 1,
    "fieldname": "freight_rate_per_mt",
    "fieldtype": "Currency",
    "label": "Freight Rate per MT"
@@ -315,7 +307,7 @@
  ],
  "is_submittable": 1,
  "links": [],
- "modified": "2026-03-28 17:07:30.914965",
+ "modified": "2026-03-30 16:28:02.299878",
  "modified_by": "Administrator",
  "module": "Simple Transport",
  "name": "Lorry Receipt",

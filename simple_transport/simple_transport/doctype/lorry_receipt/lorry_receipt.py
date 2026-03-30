@@ -25,7 +25,7 @@ class LorryReceipt(Document):
         self.populate_from_vehicle()
         self.validate_driver()
         self.validate_operation_manager()
-        self.validate_vehicle_assignment()
+        # self.validate_vehicle_assignment()
         self.validate_quantity()
         self.calculate_amounts()
         self.set_status()

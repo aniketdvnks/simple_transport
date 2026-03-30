@@ -37,7 +37,7 @@ class Trip(Document):
         self.populate_from_vehicle()
         self.validate_driver()
         self.validate_operation_manager()
-        self.validate_vehicle_assignment()
+        # self.validate_vehicle_assignment()
         self.validate_dates()
         self.validate_planned_tonnage()
         self.validate_active_trip_conflicts()

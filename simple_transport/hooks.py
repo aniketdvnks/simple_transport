@@ -45,6 +45,7 @@ required_apps = ["erpnext"]
 
 # include js in doctype views
 doctype_js = {
+	"Driver Assignment": "public/js/driver_assignment.js",
 	"Lorry Receipt": "public/js/lorry_receipt.js",
 	"Trip": "public/js/trip.js",
 	"Fuel Request": "public/js/fuel_request.js",
@@ -128,6 +129,7 @@ before_uninstall = "simple_transport.install.before_uninstall"
 # 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
 # }
 permission_query_conditions = {
+	"Driver Assignment": "simple_transport.permissions.get_driver_assignment_permission_query_conditions",
 	"Lorry Receipt": "simple_transport.permissions.get_lorry_receipt_permission_query_conditions",
 	"Trip": "simple_transport.permissions.get_trip_permission_query_conditions",
 	"Fuel Request": "simple_transport.permissions.get_fuel_request_permission_query_conditions",
@@ -138,6 +140,7 @@ permission_query_conditions = {
 }
 
 has_permission = {
+	"Driver Assignment": "simple_transport.permissions.driver_assignment_has_permission",
 	"Lorry Receipt": "simple_transport.permissions.lorry_receipt_has_permission",
 	"Trip": "simple_transport.permissions.trip_has_permission",
 	"Fuel Request": "simple_transport.permissions.fuel_request_has_permission",

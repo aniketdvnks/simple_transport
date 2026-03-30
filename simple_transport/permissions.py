@@ -26,6 +26,20 @@ def get_lorry_receipt_permission_query_conditions(user):
 	return None
 
 
+def get_driver_assignment_permission_query_conditions(user):
+	if has_transport_full_access(user):
+		return None
+
+	if condition := get_assigned_vehicle_condition(user, "`tabDriver Assignment`.`vehicle`"):
+		return condition
+
+	employee = get_driver_employee(user)
+	if employee:
+		return f"`tabDriver Assignment`.`driver` = {frappe.db.escape(employee)}"
+
+	return None
+
+
 def get_trip_permission_query_conditions(user):
 	if has_transport_full_access(user):
 		return None
@@ -75,6 +89,16 @@ def get_employee_permission_query_conditions(user):
 	if has_transport_full_access(user):
 		return None
 
+	if is_operations_manager(user):
+		assigned_driver_condition = get_assigned_driver_condition(user, "`tabEmployee`.`name`")
+		driver_roster_condition = (
+			"(ifnull(`tabEmployee`.`st_is_driver`, 0) = 1 "
+			"or ifnull(`tabEmployee`.`designation`, '') = 'Driver')"
+		)
+		if assigned_driver_condition:
+			return f"({driver_roster_condition} or {assigned_driver_condition})"
+		return driver_roster_condition
+
 	if condition := get_assigned_driver_condition(user, "`tabEmployee`.`name`"):
 		return condition
 
@@ -104,6 +128,22 @@ def get_gps_webhook_log_permission_query_conditions(user):
 
 
 def lorry_receipt_has_permission(doc, user=None, ptype=None):
+	user = user or frappe.session.user
+
+	if has_transport_full_access(user):
+		return True
+
+	if is_operations_manager(user):
+		return doc.vehicle in set(get_assigned_vehicle_names(user))
+
+	employee = get_driver_employee(user)
+	if employee:
+		return doc.driver == employee
+
+	return None
+
+
+def driver_assignment_has_permission(doc, user=None, ptype=None):
 	user = user or frappe.session.user
 
 	if has_transport_full_access(user):
@@ -176,6 +216,9 @@ def employee_has_permission(doc, user=None, ptype=None):
 		return True
 
 	if is_operations_manager(user):
+		if doc.st_is_driver or doc.designation == "Driver":
+			return True
+
 		assigned_vehicles = get_assigned_vehicle_names(user)
 		if not assigned_vehicles:
 			return False
