@@ -3,13 +3,18 @@ from __future__ import annotations
 import frappe
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 
-from simple_transport.bootstrap import sync_transport_access
+from simple_transport.bootstrap import ROLE_EXECUTIVE, ROLE_OPERATIONS, sync_transport_access
 from simple_transport.gps_integration import ensure_gps_integration_settings
 from simple_transport.print_formats import (
 	ensure_lorry_receipt_print_format,
 	ensure_sales_invoice_print_format,
 )
 from simple_transport.sales_invoice import ensure_transport_service_item
+from simple_transport.vehicle_status import (
+	IDLE_VEHICLE_STATUS,
+	get_vehicle_status_options_text,
+	sync_all_vehicle_statuses,
+)
 
 
 CUSTOM_FIELDS = {
@@ -30,9 +35,9 @@ CUSTOM_FIELDS = {
 		{
 			"fieldname": "st_operational_status",
 			"fieldtype": "Select",
-			"label": "Operational Status",
-			"options": "\nAvailable\nAt Loading Point\nIn Transit\nAt Unloading Point\nOn Hold\nUnder Maintenance\nBreakdown",
-			"default": "Available",
+			"label": "Status",
+			"options": get_vehicle_status_options_text(),
+			"default": IDLE_VEHICLE_STATUS,
 			"insert_after": "st_vehicle_capacity_mt",
 		},
 		{
@@ -329,6 +334,8 @@ def after_install():
 	setup_customizations()
 	cleanup_obsolete_transport_order_customizations()
 	sync_route_locations()
+	sync_all_vehicle_statuses()
+	sync_transport_pages()
 	ensure_gps_integration_settings()
 	ensure_transport_service_item()
 	ensure_lorry_receipt_print_format()
@@ -340,6 +347,8 @@ def after_migrate():
 	setup_customizations()
 	cleanup_obsolete_transport_order_customizations()
 	sync_route_locations()
+	sync_all_vehicle_statuses()
+	sync_transport_pages()
 	ensure_gps_integration_settings()
 	ensure_transport_service_item()
 	ensure_lorry_receipt_print_format()
@@ -368,6 +377,27 @@ def setup_customizations():
 
 def cleanup_obsolete_transport_order_customizations():
 	delete_custom_fields(OBSOLETE_TRANSPORT_ORDER_FIELDS)
+
+
+def sync_transport_pages():
+	page_roles = {
+		"daily-planning": [ROLE_EXECUTIVE, ROLE_OPERATIONS],
+		"daily-planning-1": [ROLE_EXECUTIVE, ROLE_OPERATIONS],
+	}
+
+	for page_name, roles in page_roles.items():
+		if not frappe.db.exists("Page", page_name):
+			continue
+
+		page = frappe.get_doc("Page", page_name)
+		current_roles = [row.role for row in page.roles]
+		if current_roles == roles:
+			continue
+
+		page.set("roles", [])
+		for role in roles:
+			page.append("roles", {"role": role})
+		page.save(ignore_permissions=True)
 
 
 def rename_transport_masters():

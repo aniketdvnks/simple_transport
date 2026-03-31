@@ -10,6 +10,11 @@ import frappe
 from frappe import _
 from frappe.exceptions import AuthenticationError
 from frappe.utils import cint, flt, now_datetime
+from simple_transport.vehicle_status import (
+	ACTIVE_TRIP_STATUSES,
+	get_vehicle_status_from_trip_status,
+	sync_vehicle_status,
+)
 
 
 WEBHOOK_TYPE_LABELS = {
@@ -35,27 +40,6 @@ LAST_ACTIVITY_FIELDS = {
 	"dtc": "last_dtc_on",
 	"alert": "last_alert_on",
 }
-
-ACTIVE_TRIP_STATUSES = (
-	"Planned",
-	"Ready for Dispatch",
-	"At Loading Point",
-	"In Transit",
-	"At Unloading Point",
-	"On Hold",
-)
-
-VEHICLE_STATUS_MAP = {
-	"Planned": "Available",
-	"Ready for Dispatch": "Available",
-	"At Loading Point": "At Loading Point",
-	"In Transit": "In Transit",
-	"At Unloading Point": "At Unloading Point",
-	"On Hold": "On Hold",
-	"Completed": "Available",
-	"Cancelled": "Available",
-}
-
 
 class GPSWebhookSkip(Exception):
 	def __init__(self, message: str, **context):
@@ -750,9 +734,11 @@ def update_trip_from_alert(trip, vehicle_name: str, alert_type: str, location_te
 def sync_vehicle_trip_status(vehicle_name: str, trip_name: str, trip_status: str):
 	values = {
 		"st_current_trip": trip_name if trip_status in ACTIVE_TRIP_STATUSES else "",
-		"st_operational_status": VEHICLE_STATUS_MAP.get(trip_status, "Available"),
+		"st_operational_status": get_vehicle_status_from_trip_status(trip_status),
 	}
 	frappe.db.set_value("Vehicle", vehicle_name, values, update_modified=False)
+	if trip_status not in ACTIVE_TRIP_STATUSES:
+		sync_vehicle_status(vehicle_name)
 
 
 def epoch_millis_to_datetime(value):

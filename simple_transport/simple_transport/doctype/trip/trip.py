@@ -8,25 +8,7 @@ from frappe.model.document import Document
 from frappe.utils import add_to_date, flt, getdate
 
 from simple_transport.access import is_operations_manager, is_vehicle_assigned_to_manager
-
-
-ACTIVE_TRIP_STATUSES = {
-    "Planned",
-    "Ready for Dispatch",
-    "At Loading Point",
-    "In Transit",
-    "At Unloading Point",
-    "On Hold",
-}
-
-VEHICLE_STATUS_MAP = {
-    "Planned": "Available",
-    "Ready for Dispatch": "Available",
-    "At Loading Point": "At Loading Point",
-    "In Transit": "In Transit",
-    "At Unloading Point": "At Unloading Point",
-    "On Hold": "On Hold",
-}
+from simple_transport.vehicle_status import ACTIVE_TRIP_STATUSES, sync_vehicle_status
 
 
 class Trip(Document):
@@ -46,10 +28,12 @@ class Trip(Document):
     def on_update(self):
         self.sync_vehicle_state()
         self.sync_lorry_receipt_reference()
+        self.sync_planning_assignment_reference()
 
     def on_trash(self):
         self.sync_vehicle_state(exclude_current=True)
         self.sync_lorry_receipt_reference(clear=True)
+        self.sync_planning_assignment_reference(clear=True)
 
     def populate_from_lorry_receipt(self):
         if not self.lorry_receipt:
@@ -276,35 +260,13 @@ class Trip(Document):
         self.total_expense_amount = sum(flt(row.amount) for row in self.expenses or [])
 
     def sync_vehicle_state(self, exclude_current: bool = False):
-        if not self.vehicle or not frappe.db.exists("Vehicle", self.vehicle):
+        if not self.vehicle:
             return
 
-        meta = frappe.get_meta("Vehicle")
-        if not meta.has_field("st_current_trip") or not meta.has_field("st_operational_status"):
-            return
-
-        filters = {
-            "vehicle": self.vehicle,
-            "status": ["in", list(ACTIVE_TRIP_STATUSES)],
-        }
-        if exclude_current and self.name:
-            filters["name"] = ["!=", self.name]
-
-        active_trip = frappe.db.get_value(
-            "Trip",
-            filters,
-            ["name", "status"],
-            as_dict=True,
-            order_by="modified desc",
+        sync_vehicle_status(
+            self.vehicle,
+            exclude_trip_name=self.name if exclude_current and self.name else None,
         )
-
-        values = {
-            "st_current_trip": active_trip.name if active_trip else "",
-            "st_operational_status": VEHICLE_STATUS_MAP.get(active_trip.status, "Available")
-            if active_trip
-            else "Available",
-        }
-        frappe.db.set_value("Vehicle", self.vehicle, values, update_modified=False)
 
     def sync_lorry_receipt_reference(self, clear: bool = False):
         previous = self.get_doc_before_save()
@@ -324,3 +286,24 @@ class Trip(Document):
 
         value = "" if clear or self.status == "Cancelled" else self.name
         frappe.db.set_value("Lorry Receipt", self.lorry_receipt, "trip", value, update_modified=False)
+
+    def sync_planning_assignment_reference(self, clear: bool = False):
+        if not self.lorry_receipt or not frappe.db.exists("Lorry Receipt", self.lorry_receipt):
+            return
+
+        planning_assignment = frappe.db.get_value(
+            "Lorry Receipt",
+            self.lorry_receipt,
+            "planning_assignment",
+        )
+        if not planning_assignment:
+            return
+
+        value = "" if clear or self.status == "Cancelled" else self.name
+        frappe.db.set_value(
+            "Transport Order Vehicle Assignment",
+            planning_assignment,
+            "trip",
+            value,
+            update_modified=False,
+        )

@@ -12,6 +12,9 @@
   "column_break_uhkd",
   "status",
   "trip",
+  "transport_order",
+  "transport_order_detail",
+  "planning_assignment",
   "column_break_rdai",
   "lr_date",
   "gate_pass_no",
@@ -99,6 +102,28 @@
    "fieldtype": "Link",
    "label": "Trip",
    "options": "Trip",
+   "read_only": 1
+  },
+  {
+   "fieldname": "transport_order",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Transport Order",
+   "options": "Transport Order",
+   "read_only": 1
+  },
+  {
+   "fieldname": "transport_order_detail",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Transport Order Detail",
+   "read_only": 1
+  },
+  {
+   "fieldname": "planning_assignment",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Planning Assignment",
    "read_only": 1
   },
   {

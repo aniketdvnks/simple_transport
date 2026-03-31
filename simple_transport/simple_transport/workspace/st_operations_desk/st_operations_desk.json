@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">ST Operations Desk</span>\",\"col\":12}},{\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"ST Operation Manager Permissions\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Issued LRs\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending Fuel Approval\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"GPS Logs\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Driver Assignment\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Lorry Receipt\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Trip\",\"col\":3}},{\"type\":\"card\",\"data\":{\"card_name\":\"GPS Monitoring\",\"col\":3}},{\"type\":\"card\",\"data\":{\"card_name\":\"Transport Execution\",\"col\":3}},{\"type\":\"card\",\"data\":{\"card_name\":\"Masters\",\"col\":3}},{\"type\":\"card\",\"data\":{\"card_name\":\"Maintenance\",\"col\":3}},{\"type\":\"card\",\"data\":{\"card_name\":\"Inventory\",\"col\":3}}]",
+ "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">ST Operations Desk</span>\",\"col\":12}},{\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"ST Operation Manager Permissions\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Issued LRs\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending Fuel Approval\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"GPS Logs\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Transport Order\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Driver Assignment\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Lorry Receipt\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"New Trip\",\"col\":3}},{\"type\":\"card\",\"data\":{\"card_name\":\"GPS Monitoring\",\"col\":3}},{\"type\":\"card\",\"data\":{\"card_name\":\"Transport Execution\",\"col\":3}},{\"type\":\"card\",\"data\":{\"card_name\":\"Masters\",\"col\":3}},{\"type\":\"card\",\"data\":{\"card_name\":\"Maintenance\",\"col\":3}},{\"type\":\"card\",\"data\":{\"card_name\":\"Inventory\",\"col\":3}}]",
  "creation": "2026-03-28 11:46:42.812444",
  "custom_blocks": [
   {
@@ -51,10 +51,20 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Transport Execution",
-   "link_count": 5,
+   "link_count": 6,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Transport Order",
+   "link_count": 0,
+   "link_to": "Transport Order",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   },
   {
    "hidden": 0,
@@ -110,7 +120,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Masters",
-   "link_count": 7,
+   "link_count": 8,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
@@ -131,6 +141,16 @@
    "label": "Material",
    "link_count": 0,
    "link_to": "Material",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Transport Order",
+   "link_count": 0,
+   "link_to": "Transport Order",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -264,7 +284,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-03-30 16:56:32.878464",
+ "modified": "2026-03-31 23:53:48.951496",
  "modified_by": "Administrator",
  "module": "Simple Transport",
  "name": "ST Operations Desk",
@@ -278,7 +298,7 @@
    "role": "ST Operation Manager"
   }
  ],
- "sequence_id": 11.0,
+ "sequence_id": 10.0,
  "shortcuts": [
   {
    "color": "Blue",
@@ -301,6 +321,13 @@
    "doc_view": "List",
    "label": "GPS Logs",
    "link_to": "GPS Webhook Log",
+   "type": "DocType"
+  },
+  {
+   "color": "Green",
+   "doc_view": "New",
+   "label": "New Transport Order",
+   "link_to": "Transport Order",
    "type": "DocType"
   },
   {

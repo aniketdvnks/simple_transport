@@ -22,7 +22,7 @@ frappe.ui.form.on("Trip", {
 
 		frm.set_query("vehicle", () => ({
 			filters: {
-				st_operational_status: ["not in", ["Under Maintenance", "Breakdown"]],
+				st_operational_status: ["not in", ["Under Maintenance"]],
 			},
 			}));
 		},

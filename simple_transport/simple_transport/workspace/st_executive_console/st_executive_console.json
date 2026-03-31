@@ -90,7 +90,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Dispatch & Billing",
-   "link_count": 5,
+   "link_count": 6,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
@@ -101,6 +101,16 @@
    "label": "Vehicle Assignment",
    "link_count": 0,
    "link_to": "Vehicle Assignment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Transport Order",
+   "link_count": 0,
+   "link_to": "Transport Order",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -244,7 +254,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-03-30 16:56:32.821323",
+ "modified": "2026-03-31 23:53:48.916452",
  "modified_by": "Administrator",
  "module": "Simple Transport",
  "name": "ST Executive Console",
@@ -258,7 +268,7 @@
    "role": "ST C-Level Executive"
   }
  ],
- "sequence_id": 10.0,
+ "sequence_id": 9.0,
  "shortcuts": [
   {
    "color": "Orange",

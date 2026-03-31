@@ -9,7 +9,9 @@
   "date",
   "column_break_ttnt",
   "section_break_tkrn",
-  "transport_order_details"
+  "transport_order_details",
+  "vehicle_assignments_section",
+  "vehicle_assignments"
  ],
  "fields": [
   {
@@ -31,6 +33,17 @@
    "fieldtype": "Table",
    "label": "Transport Order Details",
    "options": "Transport Order Details"
+  },
+  {
+   "fieldname": "vehicle_assignments_section",
+   "fieldtype": "Section Break",
+   "label": "Vehicle Planning"
+  },
+  {
+   "fieldname": "vehicle_assignments",
+   "fieldtype": "Table",
+   "label": "Vehicle Assignments",
+   "options": "Transport Order Vehicle Assignment"
   }
  ],
  "grid_page_length": 50,

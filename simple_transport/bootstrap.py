@@ -51,6 +51,7 @@ ROLE_DEFINITIONS = {
 				"Lorry Receipt": {"read": 1, "report": 1, "export": 1, "print": 1},
 				"Route Master": {"read": 1, "report": 1, "export": 1, "print": 1},
 				"Material": {"read": 1, "report": 1, "export": 1, "print": 1},
+				"Transport Order": {"read": 1, "report": 1, "export": 1, "print": 1},
 				"Driver Assignment": {"read": 1, "report": 1, "export": 1, "print": 1},
 				"Trip": {"read": 1, "report": 1, "export": 1, "print": 1},
 				"Fuel Request": {"read": 1, "write": 1, "report": 1, "export": 1, "print": 1},
@@ -131,6 +132,7 @@ ROLE_DEFINITIONS = {
 						"Dispatch & Billing",
 						[
 							("Vehicle Assignment", "DocType"),
+							("Transport Order", "DocType"),
 							("Driver Assignment", "DocType"),
 							("Sales Invoice", "DocType"),
 							("Customer", "DocType"),
@@ -165,6 +167,7 @@ ROLE_DEFINITIONS = {
 				"Page": {"read": 1},
 				"GPS Integration Settings": {"read": 1, "print": 1},
 				"GPS Webhook Log": {"read": 1, "report": 1, "export": 1, "print": 1},
+				"Transport Order": {"read": 1, "create": 1, "write": 1, "report": 1, "export": 1, "print": 1},
 				"Driver Assignment": {"read": 1, "create": 1, "write": 1, "submit": 1, "cancel": 1, "amend": 1, "report": 1, "export": 1, "print": 1},
 				"Lorry Receipt": {"read": 1, "create": 1, "write": 1, "submit": 1, "cancel": 1, "amend": 1, "report": 1, "export": 1, "print": 1},
 				"Route Master": {"read": 1, "create": 1, "write": 1, "report": 1, "export": 1, "print": 1},
@@ -233,12 +236,19 @@ ROLE_DEFINITIONS = {
 					"link_to": "GPS Webhook Log",
 					"type": "DocType",
 				},
-				{
-					"color": "Green",
-					"doc_view": "New",
-					"label": "New Driver Assignment",
-					"link_to": "Driver Assignment",
-					"type": "DocType",
+					{
+						"color": "Green",
+						"doc_view": "New",
+						"label": "New Transport Order",
+						"link_to": "Transport Order",
+						"type": "DocType",
+					},
+					{
+						"color": "Green",
+						"doc_view": "New",
+						"label": "New Driver Assignment",
+						"link_to": "Driver Assignment",
+						"type": "DocType",
 				},
 				{
 					"color": "Green",
@@ -263,12 +273,13 @@ ROLE_DEFINITIONS = {
 						("GPS Integration Settings", "DocType"),
 					],
 				),
-				(
-					"Transport Execution",
-					[
-						("Driver Assignment", "DocType"),
-						("Lorry Receipt", "DocType"),
-						("Trip", "DocType"),
+					(
+						"Transport Execution",
+						[
+							("Transport Order", "DocType"),
+							("Driver Assignment", "DocType"),
+							("Lorry Receipt", "DocType"),
+							("Trip", "DocType"),
 							("Fuel Request", "DocType"),
 							("Sales Invoice", "DocType"),
 						],
@@ -278,6 +289,7 @@ ROLE_DEFINITIONS = {
 						[
 							("Route Master", "DocType"),
 							("Material", "DocType"),
+							("Transport Order", "DocType"),
 							("Vehicle Assignment", "DocType"),
 							("Driver Assignment", "DocType"),
 							("Vehicle", "DocType"),

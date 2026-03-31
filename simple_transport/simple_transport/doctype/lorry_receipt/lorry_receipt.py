@@ -6,16 +6,7 @@ from frappe.model.document import Document
 from frappe.utils import flt, getdate
 
 from simple_transport.access import is_operations_manager, is_vehicle_assigned_to_manager
-
-
-ACTIVE_TRIP_STATUSES = {
-    "Planned",
-    "Ready for Dispatch",
-    "At Loading Point",
-    "In Transit",
-    "At Unloading Point",
-    "On Hold",
-}
+from simple_transport.vehicle_status import ACTIVE_TRIP_STATUSES
 
 
 class LorryReceipt(Document):
@@ -32,6 +23,7 @@ class LorryReceipt(Document):
 
     def on_submit(self):
         self.status = "Issued"
+        self.sync_planning_assignment_reference()
 
     def on_cancel(self):
         if self.trip and frappe.db.exists("Trip", self.trip):
@@ -42,6 +34,14 @@ class LorryReceipt(Document):
             )
 
         self.status = "Cancelled"
+        self.sync_planning_assignment_reference(clear=True)
+
+    def on_update(self):
+        if self.docstatus == 1:
+            self.sync_planning_assignment_reference()
+
+    def on_trash(self):
+        self.sync_planning_assignment_reference(clear=True)
 
     def populate_from_route(self):
         if not self.route_master:
@@ -183,6 +183,19 @@ class LorryReceipt(Document):
             self.status = "Issued"
         else:
             self.status = "Draft"
+
+    def sync_planning_assignment_reference(self, clear: bool = False):
+        if not self.planning_assignment:
+            return
+
+        value = "" if clear or self.docstatus == 2 else self.name
+        frappe.db.set_value(
+            "Transport Order Vehicle Assignment",
+            self.planning_assignment,
+            "lorry_receipt",
+            value,
+            update_modified=False,
+        )
 
 
 def get_contract_rate_details(customer=None, route_master=None, material=None, lr_date=None):
