@@ -470,6 +470,239 @@ async function openStartTripDialog(assignment) {
 	);
 }
 
+function openRouteFuelRequestDialog(route) {
+	const assignments = (route?.assignments || []).filter((row) => row?.vehicle);
+	if (!assignments.length) {
+		frappe.show_alert({
+			message: __("Assign at least one vehicle on this route before creating a Fuel Request."),
+			indicator: "orange",
+		});
+		return;
+	}
+
+	showFuelRequestDialog(route);
+}
+
+function openVehicleFuelRequestDialog(route, assignment) {
+	if (!assignment?.vehicle) {
+		return;
+	}
+
+	showFuelRequestDialog(route, assignment);
+}
+
+function showFuelRequestDialog(route, preselectedAssignment = null) {
+	if (!selectedTransportOrder.value || !route?.name) {
+		return;
+	}
+
+	const routeAssignments = (route.assignments || []).filter((row) => row?.vehicle);
+	const allowedVehicles = routeAssignments.map((row) => row.vehicle);
+	if (!allowedVehicles.length) {
+		frappe.show_alert({
+			message: __("No assigned vehicles are available for fuel planning on this route."),
+			indicator: "orange",
+		});
+		return;
+	}
+
+	const getAssignment = (vehicleName) =>
+		preselectedAssignment ||
+		routeAssignments.find((row) => row.vehicle === vehicleName) ||
+		null;
+
+	const dialog = new frappe.ui.Dialog({
+		title: __("Create Fuel Request"),
+		fields: [
+			{
+				fieldname: "vehicle",
+				label: __("Vehicle"),
+				fieldtype: "Link",
+				options: "Vehicle",
+				reqd: 1,
+				default: preselectedAssignment?.vehicle || "",
+				read_only: !!preselectedAssignment,
+				get_query: () => ({
+					filters: [["Vehicle", "name", "in", allowedVehicles]],
+				}),
+				onchange: () => loadVehicleDefaults(dialog.get_value("vehicle")),
+			},
+			{
+				fieldname: "request_date",
+				label: __("Request Date"),
+				fieldtype: "Date",
+				reqd: 1,
+				default: planningDate.value,
+			},
+			{
+				fieldname: "programme",
+				label: __("Programme"),
+				fieldtype: "Data",
+				read_only: 1,
+			},
+			{
+				fieldname: "distance_km",
+				label: __("KM"),
+				fieldtype: "Float",
+				read_only: 1,
+			},
+			{
+				fieldname: "load_status",
+				label: __("Filled / Not Filled"),
+				fieldtype: "Select",
+				options: "EM\nLO",
+			},
+			{
+				fieldname: "average_kmpl",
+				label: __("AVG (KM/L)"),
+				fieldtype: "Float",
+				onchange: () => refreshFuelPreview(),
+			},
+			{
+				fieldname: "diesel_given_liters",
+				label: __("Diesel Given"),
+				fieldtype: "Float",
+				default: 0,
+				onchange: () => refreshFuelPreview(),
+			},
+			{
+				fieldname: "diesel_carry_forward_liters",
+				label: __("Diesel Carry Fwd"),
+				fieldtype: "Float",
+				default: 0,
+				onchange: () => refreshFuelPreview(),
+			},
+			{
+				fieldname: "fuel_rate_per_liter",
+				label: __("Fuel Rate / Liter"),
+				fieldtype: "Currency",
+			},
+			{
+				fieldname: "fuel_math_preview",
+				fieldtype: "HTML",
+			},
+			{
+				fieldname: "reason",
+				label: __("Reason"),
+				fieldtype: "Small Text",
+			},
+			{
+				fieldname: "remarks",
+				label: __("Remarks"),
+				fieldtype: "Small Text",
+			},
+		],
+		primary_action_label: __("Create"),
+		primary_action: async (values) => {
+			try {
+				const matchedAssignment = getAssignment(values.vehicle);
+				const { message } = await frappe.call({
+					method:
+						"simple_transport.simple_transport.page.daily_planning_1.daily_planning_1.create_fuel_request_from_planning",
+					args: {
+						transport_order: selectedTransportOrder.value,
+						route_detail: route.name,
+						vehicle: values.vehicle,
+						assignment_row: matchedAssignment?.name || "",
+						request_date: values.request_date,
+						load_status: values.load_status,
+						average_kmpl: values.average_kmpl,
+						diesel_given_liters: values.diesel_given_liters,
+						diesel_carry_forward_liters: values.diesel_carry_forward_liters,
+						fuel_rate_per_liter: values.fuel_rate_per_liter,
+						reason: values.reason,
+						remarks: values.remarks,
+					},
+				});
+				dialog.hide();
+				frappe.show_alert({
+					message: __(
+						"Fuel Request {0} created • Diesel To Be Given {1} L • Balance {2} L",
+						[
+							message.fuel_request,
+							formatFuelNumber(message.diesel_to_be_given_liters),
+							formatFuelNumber(message.diesel_balance_liters),
+						]
+					),
+					indicator: "green",
+				});
+				await loadPlanning({ transportOrder: selectedTransportOrder.value });
+			} catch (error) {
+				errorMessage.value = extractErrorMessage(error);
+			}
+		},
+	});
+
+	function refreshFuelPreview() {
+		const distance = flt(dialog.get_value("distance_km"));
+		const average = flt(dialog.get_value("average_kmpl"));
+		const dieselGiven = flt(dialog.get_value("diesel_given_liters"));
+		const carryForward = flt(dialog.get_value("diesel_carry_forward_liters"));
+		const dieselToBeGiven = average > 0 && distance > 0 ? distance / average : 0;
+		const balance = carryForward - dieselGiven + dieselToBeGiven;
+		const wrapper = dialog.get_field("fuel_math_preview")?.$wrapper;
+		if (!wrapper) {
+			return;
+		}
+
+		wrapper.html(`
+			<div class="fuel-preview-grid">
+				<div class="fuel-preview-item">
+					<span>Diesel To Be Given</span>
+					<strong>${formatFuelNumber(dieselToBeGiven)} L</strong>
+				</div>
+				<div class="fuel-preview-item">
+					<span>Balance</span>
+					<strong>${formatFuelNumber(balance)} L</strong>
+				</div>
+			</div>
+		`);
+	}
+
+	async function loadVehicleDefaults(vehicleName) {
+		if (!vehicleName) {
+			return;
+		}
+
+		try {
+			const matchedAssignment = getAssignment(vehicleName);
+			const { message: defaults } = await frappe.call({
+				method:
+					"simple_transport.simple_transport.page.daily_planning_1.daily_planning_1.get_fuel_request_defaults",
+				args: {
+					transport_order: selectedTransportOrder.value,
+					route_detail: route.name,
+					vehicle: vehicleName,
+					assignment_row: matchedAssignment?.name || "",
+				},
+			});
+			dialog.set_value("programme", defaults?.programme || routeHeading(route));
+			dialog.set_value("distance_km", defaults?.distance_km || route.distance_km || 0);
+			dialog.set_value("load_status", defaults?.load_status || "");
+			dialog.set_value("average_kmpl", defaults?.average_kmpl || 0);
+			dialog.set_value("diesel_given_liters", defaults?.diesel_given_liters || 0);
+			dialog.set_value(
+				"diesel_carry_forward_liters",
+				defaults?.diesel_carry_forward_liters || 0
+			);
+			dialog.set_value("fuel_rate_per_liter", defaults?.fuel_rate_per_liter || 0);
+			dialog.set_value("reason", defaults?.reason || "");
+			refreshFuelPreview();
+		} catch (error) {
+			errorMessage.value = extractErrorMessage(error);
+		}
+	}
+
+	dialog.show();
+	if (preselectedAssignment?.vehicle) {
+		loadVehicleDefaults(preselectedAssignment.vehicle);
+	} else {
+		dialog.set_value("programme", routeHeading(route));
+		dialog.set_value("distance_km", route.distance_km || 0);
+		refreshFuelPreview();
+	}
+}
+
 function routeHeading(route) {
 	const loadingPoint = route.loading_point || "Loading Point";
 	const unloadingPoint = route.unloading_point || "Unloading Point";
@@ -541,6 +774,10 @@ function getDefaultRouteQuantity(route, assignment) {
 
 function transportOrderLabel(order) {
 	return `${order.name}`;
+}
+
+function formatFuelNumber(value) {
+	return flt(value).toFixed(2);
 }
 
 function formatDate(value) {
@@ -651,9 +888,29 @@ function extractErrorMessage(error) {
 						<div class="route-head">
 							<div class="route-heading-row">
 								<div class="route-heading">{{ routeHeading(route) }}</div>
-								<button class="route-edit-button" type="button" @click="openEditRouteDialog(route)">
-									Edit
-								</button>
+								<div class="route-head-actions">
+									<button class="route-edit-button" type="button" @click="openEditRouteDialog(route)">
+										Edit
+									</button>
+									<button
+										class="icon-button route-fuel-button"
+										type="button"
+										:title="`Create Fuel Request for ${routeHeading(route)}`"
+										:disabled="!(route.assignments || []).length"
+										@click="openRouteFuelRequestDialog(route)"
+									>
+										<svg class="fuel-icon" viewBox="0 0 24 24" aria-hidden="true">
+											<path
+												d="M6 4h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6zM8 7h6M8 11h6M16 9h2l2 2v7a2 2 0 0 1-2 2"
+												fill="none"
+												stroke="currentColor"
+												stroke-linecap="round"
+												stroke-linejoin="round"
+												stroke-width="1.8"
+											/>
+										</svg>
+									</button>
+								</div>
 							</div>
 							<div class="route-metrics">
 								<div>{{ route.qty_in_mt || 0 }} MT</div>
@@ -716,15 +973,34 @@ function extractErrorMessage(error) {
 								<template v-if="assignment">
 									<div class="cell-top" :class="assignmentProgressClass(assignment)">
 										<strong>{{ assignment.vehicle }}</strong>
-										<button
-											v-if="!assignment.lorry_receipt && !assignment.trip"
-											class="remove-button"
-											type="button"
-											:disabled="removingAssignment === assignment.name"
-											@click="unassignVehicle(assignment.name)"
-										>
-											{{ removingAssignment === assignment.name ? "..." : "x" }}
-										</button>
+										<div class="cell-top-actions">
+											<button
+												class="icon-button fuel-icon-button"
+												type="button"
+												:title="`Create Fuel Request for ${assignment.vehicle}`"
+												@click="openVehicleFuelRequestDialog(route, assignment)"
+											>
+												<svg class="fuel-icon" viewBox="0 0 24 24" aria-hidden="true">
+													<path
+														d="M6 4h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6zM8 7h6M8 11h6M16 9h2l2 2v7a2 2 0 0 1-2 2"
+														fill="none"
+														stroke="currentColor"
+														stroke-linecap="round"
+														stroke-linejoin="round"
+														stroke-width="1.8"
+													/>
+												</svg>
+											</button>
+											<button
+												v-if="!assignment.lorry_receipt && !assignment.trip"
+												class="remove-button"
+												type="button"
+												:disabled="removingAssignment === assignment.name"
+												@click="unassignVehicle(assignment.name)"
+											>
+												{{ removingAssignment === assignment.name ? "..." : "x" }}
+											</button>
+										</div>
 									</div>
 									<div class="cell-meta">
 										{{ assignment.driver || "Driver not assigned" }}
@@ -1222,6 +1498,13 @@ function extractErrorMessage(error) {
 	grid-template-columns: minmax(0, 1fr) auto;
 }
 
+.route-head-actions,
+.cell-top-actions {
+	display: grid;
+	gap: 4px;
+	justify-items: end;
+}
+
 .route-heading {
 	color: var(--ink);
 	line-height: 1.2;
@@ -1238,6 +1521,29 @@ function extractErrorMessage(error) {
 	font-weight: 700;
 	height: 22px;
 	padding: 0 6px;
+}
+
+.icon-button {
+	align-items: center;
+	border: 1px solid transparent;
+	box-shadow: 0 8px 18px rgba(50, 50, 93, 0.16);
+	color: #ffffff;
+	cursor: pointer;
+	display: inline-flex;
+	height: 24px;
+	justify-content: center;
+	padding: 0;
+	width: 24px;
+}
+
+.route-fuel-button,
+.fuel-icon-button {
+	background: linear-gradient(135deg, #fb6340 0%, #fbb140 100%);
+}
+
+.fuel-icon {
+	height: 13px;
+	width: 13px;
 }
 
 .route-metrics {
@@ -1405,6 +1711,36 @@ function extractErrorMessage(error) {
 	justify-content: center;
 	padding: 0;
 	width: 20px;
+}
+
+:global(.fuel-preview-grid) {
+	display: grid;
+	gap: 8px;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	margin: 4px 0 2px;
+}
+
+:global(.fuel-preview-item) {
+	background: #f6f9fc;
+	border-left: 4px solid #fb6340;
+	box-shadow: inset 0 0 0 1px #dfe6f1;
+	display: grid;
+	gap: 2px;
+	padding: 8px 10px;
+}
+
+:global(.fuel-preview-item span) {
+	color: #525f7f;
+	font-size: 10px;
+	font-weight: 700;
+	letter-spacing: 0.04em;
+	text-transform: uppercase;
+}
+
+:global(.fuel-preview-item strong) {
+	color: #172b4d;
+	font-size: 14px;
+	font-weight: 700;
 }
 
 @media (max-width: 1200px) {

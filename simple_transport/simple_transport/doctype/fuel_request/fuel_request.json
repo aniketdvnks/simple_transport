@@ -14,6 +14,9 @@
   "request_date",
   "status",
   "reference_section",
+  "transport_order",
+  "planning_assignment",
+  "route_detail",
   "trip",
   "lorry_receipt",
   "customer",
@@ -21,12 +24,21 @@
   "vehicle",
   "driver",
   "route_master",
+  "programme",
   "distance_km",
+  "planning_metrics_section",
+  "load_status",
+  "average_kmpl",
+  "diesel_to_be_given_liters",
+  "diesel_carry_forward_liters",
+  "planning_metrics_column_break",
+  "diesel_given_liters",
+  "fuel_rate_per_liter",
+  "diesel_balance_liters",
   "request_section",
   "requested_qty_liters",
-  "fuel_rate_per_liter",
-  "column_break_cdeh",
   "reason",
+  "column_break_cdeh",
   "requested_amount",
   "approval_section",
   "approval_status",
@@ -80,7 +92,28 @@
   {
    "fieldname": "reference_section",
    "fieldtype": "Section Break",
-   "label": "Trip Reference"
+   "label": "Planning / Trip Reference"
+  },
+  {
+   "fieldname": "transport_order",
+   "fieldtype": "Link",
+   "label": "Transport Order",
+   "options": "Transport Order",
+   "read_only": 1
+  },
+  {
+   "fieldname": "planning_assignment",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Planning Assignment",
+   "read_only": 1
+  },
+  {
+   "fieldname": "route_detail",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "Route Detail",
+   "read_only": 1
   },
   {
    "fieldname": "trip",
@@ -88,8 +121,7 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "label": "Trip",
-   "options": "Trip",
-   "reqd": 1
+   "options": "Trip"
   },
   {
    "fetch_from": "trip.lorry_receipt",
@@ -116,11 +148,10 @@
    "fieldname": "vehicle",
    "fieldtype": "Link",
    "label": "Vehicle",
-   "options": "Vehicle",
-   "read_only": 1
+   "options": "Vehicle"
   },
   {
-   "fetch_from": "trip.driver",
+   "fetch_from": "vehicle.employee",
    "fieldname": "driver",
    "fieldtype": "Link",
    "label": "Driver",
@@ -132,15 +163,56 @@
    "fieldname": "route_master",
    "fieldtype": "Link",
    "label": "Route Master",
-   "options": "Route Master",
+   "options": "Route Master"
+  },
+  {
+   "fieldname": "programme",
+   "fieldtype": "Data",
+   "label": "Programme",
    "read_only": 1
   },
   {
-   "fetch_from": "trip.distance_km",
+   "fetch_from": "route_master.distance_km",
    "fieldname": "distance_km",
    "fieldtype": "Float",
    "label": "Distance (KM)",
    "read_only": 1
+  },
+  {
+   "fieldname": "planning_metrics_section",
+   "fieldtype": "Section Break",
+   "label": "Fuel Planning"
+  },
+  {
+   "fieldname": "load_status",
+   "fieldtype": "Select",
+   "label": "Filled / Not Filled",
+   "options": "EM\nLO"
+  },
+  {
+   "fieldname": "average_kmpl",
+   "fieldtype": "Float",
+   "label": "AVG (KM/L)"
+  },
+  {
+   "fieldname": "diesel_to_be_given_liters",
+   "fieldtype": "Float",
+   "label": "Diesel To Be Given (Liters)",
+   "read_only": 1
+  },
+  {
+   "fieldname": "diesel_carry_forward_liters",
+   "fieldtype": "Float",
+   "label": "Diesel Carry Fwd (Liters)"
+  },
+  {
+   "fieldname": "planning_metrics_column_break",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "diesel_given_liters",
+   "fieldtype": "Float",
+   "label": "Diesel Given (Liters)"
   },
   {
    "fieldname": "request_section",
@@ -151,6 +223,12 @@
    "fieldname": "fuel_rate_per_liter",
    "fieldtype": "Currency",
    "label": "Fuel Rate per Liter"
+  },
+  {
+   "fieldname": "diesel_balance_liters",
+   "fieldtype": "Float",
+   "label": "Balance (Liters)",
+   "read_only": 1
   },
   {
    "fieldname": "requested_qty_liters",
@@ -322,10 +400,10 @@
   }
  ],
  "row_format": "Dynamic",
- "search_fields": "trip,lorry_receipt,vehicle,customer",
+ "search_fields": "trip,lorry_receipt,vehicle,customer,transport_order,programme",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "title_field": "trip",
+ "title_field": "vehicle",
  "track_changes": 1
 }

@@ -85,7 +85,13 @@ def _get_route_map(route_names: list[str]) -> dict[str, dict]:
 	rows = frappe.get_all(
 		"Route Master",
 		filters={"name": ["in", route_names]},
-		fields=["name", "source_location", "destination_location", "distance_km"],
+		fields=[
+			"name",
+			"source_location",
+			"destination_location",
+			"distance_km",
+			"standard_fuel_allowance_liters",
+		],
 	)
 	return {row.name: row for row in rows}
 
@@ -339,6 +345,76 @@ def _ensure_vehicle_can_be_planned(user: str, vehicle: str, planning_date, selec
 def _get_default_company():
 	companies = frappe.get_all("Company", pluck="name", limit=1)
 	return companies[0] if companies else None
+
+
+def _get_assignment_row_for_vehicle(doc, route_detail: str, vehicle: str):
+	return next(
+		(
+			row
+			for row in doc.vehicle_assignments or []
+			if row.route_detail == route_detail and row.vehicle == vehicle
+		),
+		None,
+	)
+
+
+def _format_programme(source_location: str | None, destination_location: str | None) -> str:
+	return " / ".join(value for value in [source_location, destination_location] if value)
+
+
+def _get_latest_vehicle_fuel_defaults(vehicle: str) -> dict:
+	if not vehicle:
+		return {}
+
+	rows = frappe.get_all(
+		"Fuel Request",
+		filters={"vehicle": vehicle, "docstatus": ["!=", 2]},
+		fields=[
+			"load_status",
+			"average_kmpl",
+			"diesel_balance_liters",
+			"diesel_given_liters",
+			"fuel_rate_per_liter",
+		],
+		order_by="request_date desc, modified desc",
+		limit=1,
+	)
+	return rows[0] if rows else {}
+
+
+def _get_fuel_request_defaults_payload(doc, route_row, assignment_row=None, vehicle: str | None = None) -> dict:
+	route = _get_route_map([route_row.route]).get(route_row.route) or {}
+	selected_vehicle = vehicle or getattr(assignment_row, "vehicle", "")
+	latest_fuel = _get_latest_vehicle_fuel_defaults(selected_vehicle)
+	distance_km = flt(route.get("distance_km") or 0)
+	standard_allowance = flt(route.get("standard_fuel_allowance_liters") or 0)
+	default_average = flt(latest_fuel.get("average_kmpl") or 0)
+	if not default_average and distance_km and standard_allowance:
+		default_average = round(distance_km / standard_allowance, 6)
+
+	default_load_status = latest_fuel.get("load_status") or ("LO" if flt(route_row.qty_in_mt) else "EM")
+	default_reason = _("Fuel planning for {0}").format(
+		_format_programme(route.get("source_location"), route.get("destination_location")) or route_row.route
+	)
+
+	return {
+		"transport_order": doc.name,
+		"route_detail": route_row.name,
+		"planning_assignment": getattr(assignment_row, "name", ""),
+		"vehicle": selected_vehicle,
+		"driver": getattr(assignment_row, "driver", ""),
+		"trip": getattr(assignment_row, "trip", ""),
+		"lorry_receipt": getattr(assignment_row, "lorry_receipt", ""),
+		"route_master": route_row.route,
+		"programme": _format_programme(route.get("source_location"), route.get("destination_location")),
+		"distance_km": distance_km,
+		"load_status": default_load_status,
+		"average_kmpl": default_average,
+		"diesel_given_liters": flt(latest_fuel.get("diesel_given_liters") or 0),
+		"diesel_carry_forward_liters": flt(latest_fuel.get("diesel_balance_liters") or 0),
+		"fuel_rate_per_liter": flt(latest_fuel.get("fuel_rate_per_liter") or 0),
+		"reason": default_reason,
+	}
 
 
 @frappe.whitelist()
@@ -612,4 +688,109 @@ def get_lorry_receipt_defaults(
 		"pending_weight_mt": pending_weight_mt,
 		"default_quantity_mt": default_quantity_mt or flt(row.vehicle_capacity_mt),
 		"freight_rate_per_mt": freight_rate_per_mt,
+	}
+
+
+@frappe.whitelist()
+def get_fuel_request_defaults(
+	transport_order: str,
+	route_detail: str,
+	vehicle: str,
+	assignment_row: str | None = None,
+):
+	user = _ensure_planning_access()
+	doc = frappe.get_doc("Transport Order", transport_order)
+	doc.check_permission("read")
+
+	if vehicle and not has_transport_full_access(user):
+		allowed_vehicles = set(get_assigned_vehicle_names(user))
+		if vehicle not in allowed_vehicles:
+			frappe.throw(_("Vehicle {0} is not assigned to you.").format(vehicle))
+
+	route_row = _get_route_detail(doc, route_detail)
+	selected_assignment = _get_assignment_row(doc, assignment_row) if assignment_row else None
+	if not selected_assignment:
+		selected_assignment = _get_assignment_row_for_vehicle(doc, route_detail, vehicle)
+	if selected_assignment and selected_assignment.vehicle != vehicle:
+		frappe.throw(_("Vehicle {0} is not assigned on this route.").format(vehicle))
+
+	return _get_fuel_request_defaults_payload(
+		doc,
+		route_row,
+		assignment_row=selected_assignment,
+		vehicle=vehicle,
+	)
+
+
+@frappe.whitelist()
+def create_fuel_request_from_planning(
+	transport_order: str,
+	route_detail: str,
+	vehicle: str,
+	assignment_row: str | None = None,
+	request_date=None,
+	load_status=None,
+	average_kmpl=None,
+	diesel_given_liters=None,
+	diesel_carry_forward_liters=None,
+	fuel_rate_per_liter=None,
+	reason=None,
+	remarks=None,
+):
+	user = _ensure_planning_access()
+	doc = frappe.get_doc("Transport Order", transport_order)
+	doc.check_permission("write")
+
+	if vehicle and not has_transport_full_access(user):
+		allowed_vehicles = set(get_assigned_vehicle_names(user))
+		if vehicle not in allowed_vehicles:
+			frappe.throw(_("Vehicle {0} is not assigned to you.").format(vehicle))
+
+	route_row = _get_route_detail(doc, route_detail)
+	selected_assignment = _get_assignment_row(doc, assignment_row) if assignment_row else None
+	if not selected_assignment:
+		selected_assignment = _get_assignment_row_for_vehicle(doc, route_detail, vehicle)
+	if not selected_assignment:
+		frappe.throw(_("Vehicle {0} is not assigned on the selected route.").format(vehicle))
+
+	defaults = _get_fuel_request_defaults_payload(
+		doc,
+		route_row,
+		assignment_row=selected_assignment,
+		vehicle=vehicle,
+	)
+	fuel_request = frappe.get_doc(
+		{
+			"doctype": "Fuel Request",
+			"company": _get_default_company(),
+			"request_date": getdate(request_date) if request_date else getdate(doc.date),
+			"transport_order": doc.name,
+			"route_detail": route_row.name,
+			"planning_assignment": selected_assignment.name,
+			"trip": selected_assignment.trip,
+			"lorry_receipt": selected_assignment.lorry_receipt,
+			"customer": route_row.customer,
+			"vehicle": selected_assignment.vehicle,
+			"driver": selected_assignment.driver,
+			"route_master": selected_assignment.route_master or route_row.route,
+			"programme": defaults.get("programme"),
+			"distance_km": defaults.get("distance_km"),
+			"load_status": load_status or defaults.get("load_status"),
+			"average_kmpl": flt(average_kmpl) or flt(defaults.get("average_kmpl")),
+			"diesel_given_liters": flt(diesel_given_liters),
+			"diesel_carry_forward_liters": flt(diesel_carry_forward_liters)
+			if diesel_carry_forward_liters not in (None, "")
+			else flt(defaults.get("diesel_carry_forward_liters")),
+			"fuel_rate_per_liter": flt(fuel_rate_per_liter) or flt(defaults.get("fuel_rate_per_liter")),
+			"reason": reason or defaults.get("reason"),
+			"remarks": remarks,
+		}
+	)
+	fuel_request.insert(ignore_permissions=True)
+	fuel_request.submit()
+
+	return {
+		"fuel_request": fuel_request.name,
+		"diesel_to_be_given_liters": flt(fuel_request.diesel_to_be_given_liters),
+		"diesel_balance_liters": flt(fuel_request.diesel_balance_liters),
 	}
