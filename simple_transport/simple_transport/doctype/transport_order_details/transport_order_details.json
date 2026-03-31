@@ -1,0 +1,56 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2026-03-31 13:21:58.185370",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "route",
+  "no_of_vehicles",
+  "qty_in_mt",
+  "customer"
+ ],
+ "fields": [
+  {
+   "fieldname": "route",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Route",
+   "options": "Route Master"
+  },
+  {
+   "fieldname": "no_of_vehicles",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "No Of Vehicles"
+  },
+  {
+   "fieldname": "qty_in_mt",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Qty in MT"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2026-03-31 13:23:16.589690",
+ "modified_by": "Administrator",
+ "module": "Simple Transport",
+ "name": "Transport Order Details",
+ "owner": "Administrator",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

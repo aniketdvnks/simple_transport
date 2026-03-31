@@ -1,0 +1,64 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:TO-{####}",
+ "creation": "2026-03-31 13:20:28.348103",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "date",
+  "column_break_ttnt",
+  "section_break_tkrn",
+  "transport_order_details"
+ ],
+ "fields": [
+  {
+   "default": "Today",
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "column_break_ttnt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_tkrn",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "transport_order_details",
+   "fieldtype": "Table",
+   "label": "Transport Order Details",
+   "options": "Transport Order Details"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-03-31 13:25:12.071936",
+ "modified_by": "Administrator",
+ "module": "Simple Transport",
+ "name": "Transport Order",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

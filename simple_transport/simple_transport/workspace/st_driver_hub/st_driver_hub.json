@@ -1,8 +1,13 @@
 {
  "charts": [],
- "content": "[{\"id\":\"cujtOpS1aD\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">ST Driver Hub</span>\",\"col\":12}},{\"id\":\"S6s7TwU5fy\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"My Trips\",\"col\":3}},{\"id\":\"tDjAmysPS5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Fuel Requests\",\"col\":3}},{\"id\":\"8eVcEbFz5S\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"My Vehicle\",\"col\":3}},{\"id\":\"nkVLwpaOOk\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"My Employee Card\",\"col\":3}},{\"id\":\"Xvw2KkhwuT\",\"type\":\"card\",\"data\":{\"card_name\":\"Driver Desk\",\"col\":6}},{\"id\":\"H3IOfoQHmB\",\"type\":\"card\",\"data\":{\"card_name\":\"Profile\",\"col\":6}}]",
+ "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">ST Driver Hub</span>\",\"col\":12}},{\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"ST Driver Permissions\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"My Trips\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Fuel Requests\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"My Assignments\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"My Vehicle\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"My Employee Card\",\"col\":3}},{\"type\":\"card\",\"data\":{\"card_name\":\"Driver Desk\",\"col\":6}},{\"type\":\"card\",\"data\":{\"card_name\":\"Profile\",\"col\":6}}]",
  "creation": "2026-03-28 11:46:42.824359",
- "custom_blocks": [],
+ "custom_blocks": [
+  {
+   "custom_block_name": "ST Driver Permissions",
+   "label": "ST Driver Permissions"
+  }
+ ],
  "docstatus": 0,
  "doctype": "Workspace",
  "for_user": "",
@@ -17,10 +22,20 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Driver Desk",
-   "link_count": 4,
+   "link_count": 5,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Driver Assignment",
+   "link_count": 0,
+   "link_to": "Driver Assignment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   },
   {
    "hidden": 0,
@@ -92,7 +107,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-03-30 10:13:42.617817",
+ "modified": "2026-03-30 16:56:32.782323",
  "modified_by": "Administrator",
  "module": "Simple Transport",
  "name": "ST Driver Hub",
@@ -120,6 +135,13 @@
    "doc_view": "List",
    "label": "Fuel Requests",
    "link_to": "Fuel Request",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "My Assignments",
+   "link_to": "Driver Assignment",
    "type": "DocType"
   },
   {

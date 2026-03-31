@@ -1,0 +1,26 @@
+{
+ "content": null,
+ "creation": "2026-03-31 17:49:39.630026",
+ "docstatus": 0,
+ "doctype": "Page",
+ "idx": 0,
+ "modified": "2026-03-31 17:49:39.630026",
+ "modified_by": "Administrator",
+ "module": "Simple Transport",
+ "name": "daily-planning",
+ "owner": "Administrator",
+ "page_name": "daily-planning",
+ "roles": [
+  {
+   "role": "ST C-Level Executive"
+  },
+  {
+   "role": "ST Operation Manager"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Daily Planning"
+}

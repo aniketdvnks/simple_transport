@@ -1,8 +1,13 @@
 {
  "charts": [],
- "content": "[{\"id\":\"zaZyzjnFS0\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">ST Executive Console</span>\",\"col\":12}},{\"id\":\"04MkjeaPoS\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending Fuel Approval\",\"col\":3}},{\"id\":\"JQ1unYgezi\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Issued LRs\",\"col\":3}},{\"id\":\"o4XGTc8We9\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"GPS Webhook Logs\",\"col\":3}},{\"id\":\"D6izAs2zbl\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Trips\",\"col\":3}},{\"id\":\"qpp6mz_HKJ\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Billing\",\"col\":3}},{\"id\":\"FX2huiNB5h\",\"type\":\"card\",\"data\":{\"card_name\":\"GPS Control\",\"col\":3}},{\"id\":\"kuGHxgQCx2\",\"type\":\"card\",\"data\":{\"card_name\":\"Approvals\",\"col\":3}},{\"id\":\"D7I4-yXVCT\",\"type\":\"card\",\"data\":{\"card_name\":\"Dispatch & Billing\",\"col\":3}},{\"id\":\"paHBJ8S5X4\",\"type\":\"card\",\"data\":{\"card_name\":\"Fleet & Maintenance\",\"col\":3}},{\"id\":\"JhCObWy6j5\",\"type\":\"card\",\"data\":{\"card_name\":\"Inventory\",\"col\":3}}]",
+ "content": "[{\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\">ST Executive Console</span>\",\"col\":12}},{\"type\":\"custom_block\",\"data\":{\"custom_block_name\":\"ST C-Level Executive Permissions\",\"col\":12}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Pending Fuel Approval\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Issued LRs\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"GPS Webhook Logs\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Trips\",\"col\":3}},{\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Billing\",\"col\":3}},{\"type\":\"card\",\"data\":{\"card_name\":\"GPS Control\",\"col\":3}},{\"type\":\"card\",\"data\":{\"card_name\":\"Approvals\",\"col\":3}},{\"type\":\"card\",\"data\":{\"card_name\":\"Dispatch & Billing\",\"col\":3}},{\"type\":\"card\",\"data\":{\"card_name\":\"Fleet & Maintenance\",\"col\":3}},{\"type\":\"card\",\"data\":{\"card_name\":\"Inventory\",\"col\":3}}]",
  "creation": "2026-03-28 11:46:42.790834",
- "custom_blocks": [],
+ "custom_blocks": [
+  {
+   "custom_block_name": "ST C-Level Executive Permissions",
+   "label": "ST C-Level Executive Permissions"
+  }
+ ],
  "docstatus": 0,
  "doctype": "Workspace",
  "for_user": "",
@@ -85,7 +90,7 @@
    "hidden": 0,
    "is_query_report": 0,
    "label": "Dispatch & Billing",
-   "link_count": 4,
+   "link_count": 5,
    "link_type": "DocType",
    "onboard": 0,
    "type": "Card Break"
@@ -96,6 +101,16 @@
    "label": "Vehicle Assignment",
    "link_count": 0,
    "link_to": "Vehicle Assignment",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Driver Assignment",
+   "link_count": 0,
+   "link_to": "Driver Assignment",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -229,7 +244,7 @@
    "type": "Link"
   }
  ],
- "modified": "2026-03-30 10:13:21.225546",
+ "modified": "2026-03-30 16:56:32.821323",
  "modified_by": "Administrator",
  "module": "Simple Transport",
  "name": "ST Executive Console",
