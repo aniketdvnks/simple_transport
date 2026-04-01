@@ -12,6 +12,9 @@ from simple_transport.access import (
 	has_transport_full_access,
 	is_operations_manager,
 )
+from simple_transport.simple_transport.doctype.transport_order.transport_order import (
+	ensure_transport_order_for_date,
+)
 from simple_transport.simple_transport.doctype.lorry_receipt.lorry_receipt import (
 	get_contract_rate_details,
 )
@@ -70,6 +73,15 @@ def _get_selected_transport_order(planning_date=None, transport_order=None):
 		fields=["name", "date", "modified"],
 		order_by="date asc, modified desc",
 	)
+
+	if not transport_orders and planning_date == getdate():
+		ensure_transport_order_for_date(planning_date)
+		transport_orders = frappe.get_all(
+			"Transport Order",
+			filters={"date": planning_date},
+			fields=["name", "date", "modified"],
+			order_by="date asc, modified desc",
+		)
 
 	if not selected_order and transport_orders:
 		selected_order = frappe.get_doc("Transport Order", transport_orders[0].name)

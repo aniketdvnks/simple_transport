@@ -8,7 +8,7 @@ from collections import Counter
 import frappe
 from frappe import _
 from frappe.model.document import Document
-from frappe.utils import flt, now_datetime
+from frappe.utils import flt, getdate, now_datetime
 
 from simple_transport.vehicle_status import IDLE_VEHICLE_STATUS
 
@@ -20,7 +20,7 @@ class TransportOrder(Document):
 
 	def validate_details(self):
 		if not self.transport_order_details:
-			frappe.throw(_("Add at least one route to the Transport Order."))
+			return
 
 		for row in self.transport_order_details:
 			if not row.route:
@@ -127,3 +127,31 @@ class TransportOrder(Document):
 						"Assigned vehicles for route {0} cannot exceed the required count of {1}."
 					).format(route_detail.route, int(required_vehicles))
 				)
+
+
+def get_existing_transport_order_for_date(order_date=None) -> str | None:
+	order_date = getdate(order_date)
+	existing_orders = frappe.get_all(
+		"Transport Order",
+		filters={"date": order_date},
+		fields=["name"],
+		order_by="modified desc, creation desc",
+		limit=1,
+	)
+	return existing_orders[0].name if existing_orders else None
+
+
+def ensure_transport_order_for_date(order_date=None) -> str:
+	order_date = getdate(order_date)
+	existing_order = get_existing_transport_order_for_date(order_date)
+	if existing_order:
+		return existing_order
+
+	transport_order = frappe.get_doc(
+		{
+			"doctype": "Transport Order",
+			"date": order_date,
+		}
+	)
+	transport_order.insert(ignore_permissions=True)
+	return transport_order.name

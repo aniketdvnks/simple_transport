@@ -128,27 +128,27 @@ before_uninstall = "simple_transport.install.before_uninstall"
 # permission_query_conditions = {
 # 	"Event": "frappe.desk.doctype.event.event.get_permission_query_conditions",
 # }
-permission_query_conditions = {
-	"Driver Assignment": "simple_transport.permissions.get_driver_assignment_permission_query_conditions",
-	"Lorry Receipt": "simple_transport.permissions.get_lorry_receipt_permission_query_conditions",
-	"Trip": "simple_transport.permissions.get_trip_permission_query_conditions",
-	"Fuel Request": "simple_transport.permissions.get_fuel_request_permission_query_conditions",
-	"Vehicle": "simple_transport.permissions.get_vehicle_permission_query_conditions",
-	"Employee": "simple_transport.permissions.get_employee_permission_query_conditions",
-	"Vehicle Assignment": "simple_transport.permissions.get_vehicle_assignment_permission_query_conditions",
-	"GPS Webhook Log": "simple_transport.permissions.get_gps_webhook_log_permission_query_conditions",
-}
+# permission_query_conditions = {
+# 	"Driver Assignment": "simple_transport.permissions.get_driver_assignment_permission_query_conditions",
+# 	"Lorry Receipt": "simple_transport.permissions.get_lorry_receipt_permission_query_conditions",
+# 	"Trip": "simple_transport.permissions.get_trip_permission_query_conditions",
+# 	"Fuel Request": "simple_transport.permissions.get_fuel_request_permission_query_conditions",
+# 	"Vehicle": "simple_transport.permissions.get_vehicle_permission_query_conditions",
+# 	"Employee": "simple_transport.permissions.get_employee_permission_query_conditions",
+# 	"Vehicle Assignment": "simple_transport.permissions.get_vehicle_assignment_permission_query_conditions",
+# 	"GPS Webhook Log": "simple_transport.permissions.get_gps_webhook_log_permission_query_conditions",
+# }
 
-has_permission = {
-	"Driver Assignment": "simple_transport.permissions.driver_assignment_has_permission",
-	"Lorry Receipt": "simple_transport.permissions.lorry_receipt_has_permission",
-	"Trip": "simple_transport.permissions.trip_has_permission",
-	"Fuel Request": "simple_transport.permissions.fuel_request_has_permission",
-	"Vehicle": "simple_transport.permissions.vehicle_has_permission",
-	"Employee": "simple_transport.permissions.employee_has_permission",
-	"Vehicle Assignment": "simple_transport.permissions.vehicle_assignment_has_permission",
-	"GPS Webhook Log": "simple_transport.permissions.gps_webhook_log_has_permission",
-}
+# has_permission = {
+# 	"Driver Assignment": "simple_transport.permissions.driver_assignment_has_permission",
+# 	"Lorry Receipt": "simple_transport.permissions.lorry_receipt_has_permission",
+# 	"Trip": "simple_transport.permissions.trip_has_permission",
+# 	"Fuel Request": "simple_transport.permissions.fuel_request_has_permission",
+# 	"Vehicle": "simple_transport.permissions.vehicle_has_permission",
+# 	"Employee": "simple_transport.permissions.employee_has_permission",
+# 	"Vehicle Assignment": "simple_transport.permissions.vehicle_assignment_has_permission",
+# 	"GPS Webhook Log": "simple_transport.permissions.gps_webhook_log_has_permission",
+# }
 
 # DocType Class
 # ---------------
@@ -174,23 +174,11 @@ doc_events = {
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"simple_transport.tasks.all"
-# 	],
-# 	"daily": [
-# 		"simple_transport.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"simple_transport.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"simple_transport.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"simple_transport.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"daily": [
+		"simple_transport.tasks.create_daily_transport_order",
+	]
+}
 
 # Testing
 # -------

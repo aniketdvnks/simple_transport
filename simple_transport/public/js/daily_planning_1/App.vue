@@ -177,11 +177,70 @@ async function addRoute() {
 	);
 }
 
+function normalizeVehicleSearch(value) {
+	return String(value || "").trim().toLowerCase();
+}
+
+function vehicleOptionLabel(vehicle) {
+	if (!vehicle) {
+		return "";
+	}
+
+	const lead = vehicle.label || vehicle.name;
+	const meta = [];
+	if (flt(vehicle.capacity_mt)) {
+		meta.push(`${flt(vehicle.capacity_mt)} MT`);
+	}
+	if (vehicle.driver) {
+		meta.push(vehicle.driver);
+	}
+
+	return [lead, ...meta].join(" • ");
+}
+
+function resolveAssignableVehicleName(selection) {
+	const query = normalizeVehicleSearch(selection);
+	if (!query) {
+		return "";
+	}
+
+	const exactMatch = assignableIdleVehicles.value.find((vehicle) =>
+		[vehicle.name, vehicle.label, vehicleOptionLabel(vehicle)]
+			.filter(Boolean)
+			.some((value) => normalizeVehicleSearch(value) === query)
+	);
+	if (exactMatch) {
+		return exactMatch.name;
+	}
+
+	const partialMatches = assignableIdleVehicles.value.filter((vehicle) =>
+		[vehicle.name, vehicle.label, vehicleOptionLabel(vehicle)]
+			.filter(Boolean)
+			.some((value) => normalizeVehicleSearch(value).includes(query))
+	);
+	return partialMatches.length === 1 ? partialMatches[0].name : "";
+}
+
+function assignmentSearchHint(routeName) {
+	const selection = assignmentSelections.value[routeName];
+	if (!selection) {
+		return __("Search by vehicle number");
+	}
+
+	const resolvedName = resolveAssignableVehicleName(selection);
+	if (!resolvedName) {
+		return __("Pick a vehicle from search results");
+	}
+
+	const vehicle = assignableIdleVehicles.value.find((row) => row.name === resolvedName);
+	return vehicle ? vehicleOptionLabel(vehicle) : __("Vehicle selected");
+}
+
 async function assignVehicle(route) {
-	const vehicle = assignmentSelections.value[route.name];
+	const vehicle = resolveAssignableVehicleName(assignmentSelections.value[route.name]);
 	if (!vehicle || !selectedTransportOrder.value) {
 		frappe.show_alert({
-			message: __("Select an idle vehicle before assigning."),
+			message: __("Select a valid idle vehicle before assigning."),
 			indicator: "orange",
 		});
 		return;
@@ -544,7 +603,6 @@ function showFuelRequestDialog(route, preselectedAssignment = null) {
 				fieldname: "distance_km",
 				label: __("KM"),
 				fieldtype: "Float",
-				read_only: 1,
 			},
 			{
 				fieldname: "load_status",
@@ -806,8 +864,57 @@ function extractErrorMessage(error) {
 	<div class="planning-board">
 		<header class="board-header">
 			<div class="board-title-row">
-				<h1>DAILY SCHEDULE :: DATE : {{ formattedPlanningDate }}</h1>
-				<div class="board-time">{{ formattedClock }}</div>
+				<div class="board-title-block">
+					<h1>DAILY SCHEDULE :</h1>
+					<!-- <div class="board-time">{{ formattedClock }}</div> -->
+				</div>
+				<div class="board-controls">
+					<label class="toolbar-field">
+						<!-- <span>Date</span> -->
+						<input
+							v-model="planningDate"
+							type="date"
+							@change="loadPlanning({ planningDateValue: planningDate, transportOrder: '' })"
+						/>
+					</label>
+
+					<label class="toolbar-field toolbar-order">
+						<!-- <span>Transport Order</span> -->
+						<select
+							v-model="selectedTransportOrder"
+							:disabled="loading || !transportOrders.length"
+							@change="loadPlanning({ transportOrder: selectedTransportOrder })"
+						>
+							<option value="" disabled>Select transport order</option>
+							<option v-for="order in transportOrders" :key="order.name" :value="order.name">
+								{{ transportOrderLabel(order) }}
+							</option>
+						</select>
+					</label>
+
+					<button class="toolbar-button" :disabled="loading" type="button" @click="loadPlanning()">
+						{{ loading ? "Refreshing..." : "Refresh" }}
+					</button>
+
+					<button
+						class="toolbar-button secondary"
+						:disabled="!selectedTransportOrder"
+						type="button"
+						@click="addRoute"
+					>
+						Add Route
+					</button>
+
+					<a
+						v-if="selectedTransportOrder"
+						class="toolbar-link"
+						:href="transportOrderLink"
+						target="_blank"
+						rel="noopener noreferrer"
+					>
+						Open Transport Order
+					</a>
+				</div>
 			</div>
 			<div class="board-summary-row">
 				<div>Transport Order : <strong>{{ selectedTransportOrder || "Not selected" }}</strong></div>
@@ -818,54 +925,6 @@ function extractErrorMessage(error) {
 				<div>Pending Weight : <strong>{{ totalPendingWeight }} MT</strong></div>
 			</div>
 		</header>
-
-		<section class="toolbar-strip">
-			<label class="toolbar-field">
-				<span>Date</span>
-				<input
-					v-model="planningDate"
-					type="date"
-					@change="loadPlanning({ planningDateValue: planningDate, transportOrder: '' })"
-				/>
-			</label>
-
-			<label class="toolbar-field toolbar-order">
-				<span>Transport Order</span>
-				<select
-					v-model="selectedTransportOrder"
-					:disabled="loading || !transportOrders.length"
-					@change="loadPlanning({ transportOrder: selectedTransportOrder })"
-				>
-					<option value="" disabled>Select transport order</option>
-					<option v-for="order in transportOrders" :key="order.name" :value="order.name">
-						{{ transportOrderLabel(order) }}
-					</option>
-				</select>
-			</label>
-
-			<button class="toolbar-button" :disabled="loading" type="button" @click="loadPlanning()">
-				{{ loading ? "Refreshing..." : "Refresh" }}
-			</button>
-
-			<button
-				class="toolbar-button secondary"
-				:disabled="!selectedTransportOrder"
-				type="button"
-				@click="addRoute"
-			>
-				Add Route
-			</button>
-
-			<a
-				v-if="selectedTransportOrder"
-				class="toolbar-link"
-				:href="transportOrderLink"
-				target="_blank"
-				rel="noopener noreferrer"
-			>
-				Open Transport Order
-			</a>
-		</section>
 
 		<div v-if="scopeNote" class="info-strip">{{ scopeNote }}</div>
 		<div v-if="errorMessage" class="error-strip">{{ errorMessage }}</div>
@@ -929,26 +988,26 @@ function extractErrorMessage(error) {
 								<div class="route-progress-value">{{ routeProgressPercent(route) }}%</div>
 							</div>
 							<div class="assign-row">
-								<select
-									v-model="assignmentSelections[route.name]"
-									:disabled="!assignableIdleVehicles.length || route.pending_count <= 0"
-								>
-									<option value="" disabled>Select idle vehicle</option>
-									<option
-										v-for="vehicle in assignableIdleVehicles"
-										:key="vehicle.name"
-										:value="vehicle.name"
-									>
-										{{ vehicle.label || vehicle.name }} • {{ vehicle.capacity_mt || 0 }} MT
-									</option>
-								</select>
+								<div class="assign-search">
+									<input
+										v-model="assignmentSelections[route.name]"
+										list="assignable-vehicle-options"
+										type="search"
+										autocomplete="off"
+										placeholder="Search idle vehicle"
+										:disabled="!assignableIdleVehicles.length || route.pending_count <= 0"
+									/>
+									<div class="assign-search-hint">
+										{{ assignmentSearchHint(route.name) }}
+									</div>
+								</div>
 								<button
 									class="assign-button"
 									type="button"
 									:disabled="
 										busyRoute === route.name ||
 										!assignableIdleVehicles.length ||
-										!assignmentSelections[route.name] ||
+										!resolveAssignableVehicleName(assignmentSelections[route.name]) ||
 										route.pending_count <= 0
 									"
 									@click="assignVehicle(route)"
@@ -1062,6 +1121,15 @@ function extractErrorMessage(error) {
 				</div>
 			</div>
 		</section>
+		<datalist id="assignable-vehicle-options">
+			<option
+				v-for="vehicle in assignableIdleVehicles"
+				:key="vehicle.name"
+				:value="vehicleOptionLabel(vehicle)"
+			>
+				{{ vehicle.name }}
+			</option>
+		</datalist>
 	</div>
 </template>
 
@@ -1247,7 +1315,6 @@ function extractErrorMessage(error) {
 }
 
 .board-header,
-.toolbar-strip,
 .route-sheet,
 .info-strip,
 .error-strip,
@@ -1272,7 +1339,23 @@ function extractErrorMessage(error) {
 }
 
 .board-title-row {
-	grid-template-columns: minmax(0, 1fr) auto;
+	grid-template-columns: auto minmax(0, 1fr);
+}
+
+.board-title-block {
+	align-items: center;
+	display: flex;
+	gap: 12px;
+	min-width: 0;
+}
+
+.board-controls {
+	align-items: end;
+	display: grid;
+	gap: 8px;
+	grid-template-columns: 148px minmax(220px, 1fr) auto auto auto;
+	justify-self: end;
+	width: 100%;
 }
 
 .board-title-row h1,
@@ -1304,6 +1387,7 @@ function extractErrorMessage(error) {
 .board-time {
 	font-size: 13px;
 	font-weight: 600;
+	white-space: nowrap;
 }
 
 .board-summary-row {
@@ -1313,14 +1397,6 @@ function extractErrorMessage(error) {
 	font-size: 12px;
 	grid-template-columns: repeat(6, minmax(0, 1fr));
 	padding: 8px 10px 0;
-}
-
-.toolbar-strip {
-	align-items: end;
-	display: grid;
-	gap: 8px;
-	grid-template-columns: 170px minmax(220px, 1fr) auto auto auto;
-	padding: 8px 10px;
 }
 
 .toolbar-field {
@@ -1337,7 +1413,7 @@ function extractErrorMessage(error) {
 
 .toolbar-field input,
 .toolbar-field select,
-.assign-row select {
+.assign-search input {
 	background: #ffffff;
 	border: 1px solid var(--line-dark);
 	border-radius: 6px;
@@ -1600,14 +1676,40 @@ function extractErrorMessage(error) {
 
 .assign-row {
 	background: #ffffff;
-	display: grid;
+	display: flex;
 	gap: 6px;
-	grid-template-columns: minmax(0, 1fr) 52px;
+	align-items: flex-start;
+	min-width: 0;
 }
 
-.assign-row select,
+.assign-search {
+	display: grid;
+	flex: 1 1 auto;
+	gap: 3px;
+	min-width: 0;
+}
+
+.assign-row input,
 .assign-button {
 	height: 28px;
+}
+
+.assign-row input {
+	min-width: 0;
+	width: 100%;
+}
+
+.assign-button {
+	align-self: flex-start;
+	flex: 0 0 52px;
+}
+
+.assign-search-hint {
+	color: var(--muted);
+	font-size: 10px;
+	font-weight: 600;
+	line-height: 1.2;
+	min-height: 12px;
 }
 
 .route-body {
@@ -1745,7 +1847,11 @@ function extractErrorMessage(error) {
 
 @media (max-width: 1200px) {
 	.board-summary-row,
-	.toolbar-strip {
+	.board-controls {
+		grid-template-columns: 1fr;
+	}
+
+	.board-title-row {
 		grid-template-columns: 1fr;
 	}
 }
