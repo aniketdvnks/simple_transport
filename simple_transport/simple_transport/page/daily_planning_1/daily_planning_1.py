@@ -198,16 +198,82 @@ def _get_vehicle_buckets(user: str, planning_date, selected_order):
 	}
 
 
-def _get_trip_status_map(trip_names: list[str]) -> dict[str, str]:
+def _get_fuel_metrics(user: str, planning_date) -> dict:
+	vehicle_names = _get_current_vehicle_scope(user)
+	if not has_transport_full_access(user) and not vehicle_names:
+		return {
+			"total_fuel_for_day_liters": 0,
+			"operation_manager_fuel_totals": [],
+		}
+
+	filters = {
+		"request_date": getdate(planning_date),
+		"docstatus": ["!=", 2],
+		"approval_status": ["!=", "Rejected"],
+	}
+	if not has_transport_full_access(user):
+		filters["vehicle"] = ["in", vehicle_names]
+
+	rows = frappe.get_all(
+		"Fuel Request",
+		filters=filters,
+		fields=[
+			"operation_manager",
+			"sum(requested_qty_liters) as total_requested_qty_liters",
+		],
+		group_by="operation_manager",
+		order_by="sum(requested_qty_liters) desc",
+	)
+
+	manager_names = [row.operation_manager for row in rows if row.operation_manager]
+	manager_label_map = {}
+	if manager_names:
+		manager_label_map = {
+			row.name: (row.full_name or row.name)
+			for row in frappe.get_all(
+				"User",
+				filters={"name": ["in", manager_names]},
+				fields=["name", "full_name"],
+			)
+		}
+
+	manager_totals = []
+	total_fuel_for_day_liters = 0
+	for row in rows:
+		total_liters = flt(row.total_requested_qty_liters)
+		total_fuel_for_day_liters += total_liters
+		manager_name = row.operation_manager or ""
+		manager_totals.append(
+			{
+				"operation_manager": manager_name,
+				"label": manager_label_map.get(manager_name) or _("Unassigned"),
+				"total_requested_qty_liters": total_liters,
+				"is_current_user": manager_name == user,
+			}
+		)
+
+	return {
+		"total_fuel_for_day_liters": total_fuel_for_day_liters,
+		"operation_manager_fuel_totals": manager_totals,
+	}
+
+
+def _get_trip_summary_map(trip_names: list[str]) -> dict[str, dict]:
 	if not trip_names:
 		return {}
 
 	rows = frappe.get_all(
 		"Trip",
 		filters={"name": ["in", trip_names]},
-		fields=["name", "status"],
+		fields=["name", "status", "total_expense_amount"],
 	)
-	return {row.name: row.status for row in rows}
+	return {
+		row.name: {
+			"status": row.status,
+			"total_expense_amount": flt(row.total_expense_amount),
+		}
+		for row in rows
+	}
 
 
 def _serialize_assignments(assignments_by_route: dict[str, list], route_map: dict[str, dict]) -> dict[str, list[dict]]:
@@ -217,7 +283,7 @@ def _serialize_assignments(assignments_by_route: dict[str, list], route_map: dic
 		for row in rows
 		if getattr(row, "trip", None)
 	]
-	trip_status_map = _get_trip_status_map(trip_names)
+	trip_summary_map = _get_trip_summary_map(trip_names)
 
 	serialized = defaultdict(list)
 	for route_detail, rows in assignments_by_route.items():
@@ -236,7 +302,11 @@ def _serialize_assignments(assignments_by_route: dict[str, list], route_map: dic
 					"unloading_point": route.get("destination_location"),
 					"lorry_receipt": getattr(row, "lorry_receipt", ""),
 					"trip": getattr(row, "trip", ""),
-					"trip_status": trip_status_map.get(getattr(row, "trip", ""), ""),
+					"trip_status": trip_summary_map.get(getattr(row, "trip", ""), {}).get("status", ""),
+					"total_expense_amount": trip_summary_map.get(
+						getattr(row, "trip", ""),
+						{},
+					).get("total_expense_amount", 0),
 				}
 			)
 	return serialized
@@ -437,6 +507,7 @@ def get_daily_planning_data(planning_date=None, transport_order=None):
 		transport_order=transport_order,
 	)
 	vehicle_data = _get_vehicle_buckets(user, planning_date, selected_order)
+	fuel_metrics = _get_fuel_metrics(user, planning_date)
 	scope_note = vehicle_data["scope_note"] or (
 		_("Showing only vehicles assigned to operation manager {0}.").format(user)
 		if is_operations_manager(user) and not has_transport_full_access(user)
@@ -451,6 +522,8 @@ def get_daily_planning_data(planning_date=None, transport_order=None):
 		"assignable_idle_vehicles": vehicle_data["assignable_idle_vehicles"],
 		"idle_vehicles": vehicle_data["idle_vehicles"],
 		"unloading_vehicles": vehicle_data["unloading_vehicles"],
+		"total_fuel_for_day_liters": fuel_metrics["total_fuel_for_day_liters"],
+		"operation_manager_fuel_totals": fuel_metrics["operation_manager_fuel_totals"],
 		"scope_note": scope_note,
 	}
 
@@ -782,6 +855,7 @@ def create_fuel_request_from_planning(
 			"trip": selected_assignment.trip,
 			"lorry_receipt": selected_assignment.lorry_receipt,
 			"customer": route_row.customer,
+			"operation_manager": user if is_operations_manager(user) else None,
 			"vehicle": selected_assignment.vehicle,
 			"driver": selected_assignment.driver,
 			"route_master": selected_assignment.route_master or route_row.route,
@@ -805,4 +879,48 @@ def create_fuel_request_from_planning(
 		"fuel_request": fuel_request.name,
 		"diesel_to_be_given_liters": flt(fuel_request.diesel_to_be_given_liters),
 		"diesel_balance_liters": flt(fuel_request.diesel_balance_liters),
+	}
+
+
+@frappe.whitelist()
+def add_trip_expense_from_planning(
+	trip: str,
+	expense_date=None,
+	expense_type=None,
+	payment_mode=None,
+	amount=None,
+	reference_no=None,
+	description=None,
+):
+	_ensure_planning_access()
+
+	if not trip or not frappe.db.exists("Trip", trip):
+		frappe.throw(_("Trip is required to add an expense."))
+
+	trip_doc = frappe.get_doc("Trip", trip)
+	trip_doc.check_permission("write")
+
+	if trip_doc.status == "Cancelled":
+		frappe.throw(_("Trip {0} is cancelled, so expenses cannot be added.").format(trip))
+
+	if flt(amount) <= 0:
+		frappe.throw(_("Expense amount must be greater than zero."))
+
+	trip_doc.append(
+		"expenses",
+		{
+			"expense_date": getdate(expense_date) if expense_date else getdate(),
+			"expense_type": expense_type,
+			"payment_mode": payment_mode,
+			"amount": flt(amount),
+			"reference_no": reference_no,
+			"description": description,
+		},
+	)
+	trip_doc.save(ignore_permissions=True)
+
+	return {
+		"trip": trip_doc.name,
+		"total_expense_amount": flt(trip_doc.total_expense_amount),
+		"expense_count": len(trip_doc.expenses or []),
 	}

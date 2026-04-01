@@ -4,6 +4,10 @@ import frappe
 from frappe.custom.doctype.custom_field.custom_field import create_custom_fields
 
 from simple_transport.bootstrap import ROLE_EXECUTIVE, ROLE_OPERATIONS, sync_transport_access
+from simple_transport.access import (
+	get_active_operation_manager_for_vehicle,
+	is_operations_manager,
+)
 from simple_transport.gps_integration import ensure_gps_integration_settings
 from simple_transport.print_formats import (
 	ensure_lorry_receipt_print_format,
@@ -335,6 +339,7 @@ def after_install():
 	cleanup_obsolete_transport_order_customizations()
 	sync_route_locations()
 	sync_all_vehicle_statuses()
+	backfill_fuel_request_operation_managers()
 	sync_transport_pages()
 	ensure_gps_integration_settings()
 	ensure_transport_service_item()
@@ -348,6 +353,7 @@ def after_migrate():
 	cleanup_obsolete_transport_order_customizations()
 	sync_route_locations()
 	sync_all_vehicle_statuses()
+	backfill_fuel_request_operation_managers()
 	sync_transport_pages()
 	ensure_gps_integration_settings()
 	ensure_transport_service_item()
@@ -377,6 +383,56 @@ def setup_customizations():
 
 def cleanup_obsolete_transport_order_customizations():
 	delete_custom_fields(OBSOLETE_TRANSPORT_ORDER_FIELDS)
+
+
+def backfill_fuel_request_operation_managers():
+	if not frappe.db.exists("DocType", "Fuel Request"):
+		return
+
+	rows = frappe.get_all(
+		"Fuel Request",
+		filters={
+			"docstatus": ["!=", 2],
+			"operation_manager": ["in", ["", None]],
+		},
+		fields=["name", "trip", "lorry_receipt", "vehicle", "planning_assignment"],
+		limit_page_length=0,
+	)
+
+	for row in rows:
+		operation_manager = ""
+
+		if row.trip and frappe.db.exists("Trip", row.trip):
+			operation_manager = frappe.db.get_value("Trip", row.trip, "operation_manager") or ""
+
+		if not operation_manager and row.lorry_receipt and frappe.db.exists("Lorry Receipt", row.lorry_receipt):
+			operation_manager = (
+				frappe.db.get_value("Lorry Receipt", row.lorry_receipt, "operation_manager") or ""
+			)
+
+		if not operation_manager and row.planning_assignment and frappe.db.exists(
+			"Transport Order Vehicle Assignment",
+			row.planning_assignment,
+		):
+			assigned_by = frappe.db.get_value(
+				"Transport Order Vehicle Assignment",
+				row.planning_assignment,
+				"assigned_by",
+			)
+			if assigned_by and is_operations_manager(assigned_by):
+				operation_manager = assigned_by
+
+		if not operation_manager and row.vehicle:
+			operation_manager = get_active_operation_manager_for_vehicle(row.vehicle) or ""
+
+		if operation_manager:
+			frappe.db.set_value(
+				"Fuel Request",
+				row.name,
+				"operation_manager",
+				operation_manager,
+				update_modified=False,
+			)
 
 
 def sync_transport_pages():

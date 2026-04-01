@@ -5,12 +5,18 @@ from frappe import _
 from frappe.model.document import Document
 from frappe.utils import flt, now_datetime
 
+from simple_transport.access import (
+	get_active_operation_manager_for_vehicle,
+	is_operations_manager,
+)
+
 
 class FuelRequest(Document):
 	def validate(self):
 		self.populate_from_planning()
 		self.populate_from_trip()
 		self.populate_from_route_master()
+		self.set_operation_manager()
 		self.set_programme()
 		self.calculate_amounts()
 		self.validate_amounts()
@@ -58,6 +64,9 @@ class FuelRequest(Document):
 			self.route_master = self.route_master or route_row.route
 			self.customer = self.customer or route_row.customer
 
+		if assignment_row and assignment_row.assigned_by and is_operations_manager(assignment_row.assigned_by):
+			self.operation_manager = self.operation_manager or assignment_row.assigned_by
+
 	def populate_from_trip(self):
 		if not self.trip:
 			return
@@ -69,6 +78,7 @@ class FuelRequest(Document):
 				"company",
 				"lorry_receipt",
 				"customer",
+				"operation_manager",
 				"vehicle",
 				"driver",
 				"route_master",
@@ -83,6 +93,7 @@ class FuelRequest(Document):
 		self.company = trip.company
 		self.lorry_receipt = trip.lorry_receipt
 		self.customer = trip.customer
+		self.operation_manager = trip.operation_manager
 		self.vehicle = trip.vehicle
 		self.driver = trip.driver
 		self.route_master = trip.route_master
@@ -112,6 +123,23 @@ class FuelRequest(Document):
 
 		if not flt(self.diesel_to_be_given_liters) and not flt(self.average_kmpl):
 			self.diesel_to_be_given_liters = flt(route.standard_fuel_allowance_liters)
+
+	def set_operation_manager(self):
+		if self.operation_manager:
+			return
+
+		if self.lorry_receipt and frappe.db.exists("Lorry Receipt", self.lorry_receipt):
+			self.operation_manager = frappe.db.get_value(
+				"Lorry Receipt",
+				self.lorry_receipt,
+				"operation_manager",
+			)
+
+		if not self.operation_manager and self.vehicle:
+			self.operation_manager = get_active_operation_manager_for_vehicle(self.vehicle)
+
+		if not self.operation_manager and is_operations_manager(frappe.session.user):
+			self.operation_manager = frappe.session.user
 
 	def set_programme(self):
 		if self.programme:

@@ -58,6 +58,28 @@ def get_assigned_vehicle_names(user=None) -> list[str]:
 	return [row.vehicle for row in rows]
 
 
+def get_active_operation_manager_for_vehicle(vehicle: str) -> str | None:
+	if not vehicle:
+		return None
+
+	rows = frappe.db.sql(
+		"""
+		select assignment.operation_manager
+		from `tabVehicle Assignment Detail` detail
+		inner join `tabVehicle Assignment` assignment on assignment.name = detail.parent
+		where detail.vehicle = %s
+			and assignment.is_active = 1
+			and assignment.docstatus < 2
+			and ifnull(assignment.operation_manager, '') != ''
+		order by assignment.modified desc
+		limit 1
+		""",
+		(vehicle,),
+		as_dict=True,
+	)
+	return rows[0].operation_manager if rows else None
+
+
 def get_assigned_vehicle_condition(user: str, vehicle_field: str) -> str | None:
 	if has_transport_full_access(user):
 		return None

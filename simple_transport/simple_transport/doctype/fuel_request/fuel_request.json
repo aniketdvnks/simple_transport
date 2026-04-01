@@ -20,6 +20,7 @@
   "trip",
   "lorry_receipt",
   "customer",
+  "operation_manager",
   "reference_column_break",
   "vehicle",
   "driver",
@@ -137,6 +138,13 @@
    "fieldtype": "Link",
    "label": "Customer",
    "options": "Customer",
+   "read_only": 1
+  },
+  {
+   "fieldname": "operation_manager",
+   "fieldtype": "Link",
+   "label": "Operation Manager",
+   "options": "User",
    "read_only": 1
   },
   {
@@ -400,7 +408,7 @@
   }
  ],
  "row_format": "Dynamic",
- "search_fields": "trip,lorry_receipt,vehicle,customer,transport_order,programme",
+ "search_fields": "trip,lorry_receipt,vehicle,customer,operation_manager,transport_order,programme",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

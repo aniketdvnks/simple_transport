@@ -11,10 +11,13 @@ const routeRows = ref([]);
 const assignableIdleVehicles = ref([]);
 const idleVehicles = ref([]);
 const unloadingVehicles = ref([]);
+const totalFuelForDay = ref(0);
+const operationManagerFuelTotals = ref([]);
 const scopeNote = ref("");
 const errorMessage = ref("");
 const assignmentSelections = ref({});
 const clockNow = ref(new Date());
+const savingTripExpense = ref("");
 
 let clockTimer = null;
 
@@ -79,6 +82,8 @@ function setPlanningState(message = {}) {
 	assignableIdleVehicles.value = message.assignable_idle_vehicles || [];
 	idleVehicles.value = message.idle_vehicles || [];
 	unloadingVehicles.value = message.unloading_vehicles || [];
+	totalFuelForDay.value = flt(message.total_fuel_for_day_liters || 0);
+	operationManagerFuelTotals.value = message.operation_manager_fuel_totals || [];
 	scopeNote.value = message.scope_note || "";
 
 	const nextSelections = {};
@@ -529,6 +534,80 @@ async function openStartTripDialog(assignment) {
 	);
 }
 
+function openTripExpenseDialog(assignment) {
+	if (!assignment?.trip) {
+		return;
+	}
+
+	frappe.prompt(
+		[
+			{
+				fieldname: "expense_date",
+				label: __("Expense Date"),
+				fieldtype: "Date",
+				reqd: 1,
+				default: frappe.datetime.get_today(),
+			},
+			{
+				fieldname: "expense_type",
+				label: __("Expense Type"),
+				fieldtype: "Select",
+				reqd: 1,
+				options: "\nToll\nOctroi\nFastag\nParking\nRepair\nFood\nPermit\nOther",
+			},
+			{
+				fieldname: "payment_mode",
+				label: __("Payment Mode"),
+				fieldtype: "Select",
+				options: "\nCash\nFastag\nCard\nUPI\nCredit",
+			},
+			{
+				fieldname: "amount",
+				label: __("Amount"),
+				fieldtype: "Currency",
+				reqd: 1,
+			},
+			{
+				fieldname: "reference_no",
+				label: __("Reference No"),
+				fieldtype: "Data",
+			},
+			{
+				fieldname: "description",
+				label: __("Description"),
+				fieldtype: "Small Text",
+			},
+		],
+		async (values) => {
+			savingTripExpense.value = assignment.trip;
+			try {
+				const { message } = await frappe.call({
+					method:
+						"simple_transport.simple_transport.page.daily_planning_1.daily_planning_1.add_trip_expense_from_planning",
+					args: {
+						trip: assignment.trip,
+						...values,
+					},
+				});
+				frappe.show_alert({
+					message: __(
+						"Expense added to {0} • Total Expense {1}",
+						[assignment.trip, formatCurrency(message.total_expense_amount)]
+					),
+					indicator: "green",
+				});
+				await loadPlanning({ transportOrder: selectedTransportOrder.value });
+			} catch (error) {
+				errorMessage.value = extractErrorMessage(error);
+			} finally {
+				savingTripExpense.value = "";
+			}
+		},
+		__("Add Trip Expense"),
+		__("Add Expense")
+	);
+}
+
 function openRouteFuelRequestDialog(route) {
 	const assignments = (route?.assignments || []).filter((row) => row?.vehicle);
 	if (!assignments.length) {
@@ -838,6 +917,10 @@ function formatFuelNumber(value) {
 	return flt(value).toFixed(2);
 }
 
+function formatCurrency(value) {
+	return format_number(flt(value), null, 2);
+}
+
 function formatDate(value) {
 	if (!value) {
 		return "";
@@ -923,6 +1006,22 @@ function extractErrorMessage(error) {
 				<div>Assigned : <strong>{{ totalAssignedVehicles }}</strong></div>
 				<div>Pending Vehicles : <strong>{{ totalPendingVehicles }}</strong></div>
 				<div>Pending Weight : <strong>{{ totalPendingWeight }} MT</strong></div>
+				<div>Fuel Today : <strong>{{ formatFuelNumber(totalFuelForDay) }} L</strong></div>
+			</div>
+			<div class="board-fuel-row">
+				<div class="board-fuel-label">Operation Manager Fuel</div>
+				<div v-if="operationManagerFuelTotals.length" class="board-fuel-list">
+					<div
+						v-for="managerFuel in operationManagerFuelTotals"
+						:key="managerFuel.operation_manager || managerFuel.label"
+						class="board-fuel-chip"
+						:class="{ current: managerFuel.is_current_user }"
+					>
+						<span>{{ managerFuel.label }}</span>
+						<strong>{{ formatFuelNumber(managerFuel.total_requested_qty_liters) }} L</strong>
+					</div>
+				</div>
+				<div v-else class="board-fuel-empty">No fuel requests for this date</div>
 			</div>
 		</header>
 
@@ -1067,6 +1166,9 @@ function extractErrorMessage(error) {
 											• {{ assignment.vehicle_capacity_mt }} MT
 										</span>
 									</div>
+									<div v-if="assignment.trip" class="expense-badge">
+										Expense {{ formatCurrency(assignment.total_expense_amount) }}
+									</div>
 									<div class="cell-actions">
 										<button
 											v-if="!assignment.lorry_receipt"
@@ -1108,6 +1210,23 @@ function extractErrorMessage(error) {
 												Open Trip
 											</button>
 										</template>
+										<span
+											class="cell-button-wrap"
+											:title="assignment.trip ? 'Add Trip Expense' : 'Start Trip First'"
+										>
+											<button
+												class="cell-button expense-button"
+												type="button"
+												:disabled="!assignment.trip || savingTripExpense === assignment.trip"
+												@click="openTripExpenseDialog(assignment)"
+											>
+												{{
+													savingTripExpense === assignment.trip
+														? "Saving..."
+														: "Add Expense"
+												}}
+											</button>
+										</span>
 									</div>
 								</template>
 								<template v-else>
@@ -1395,8 +1514,60 @@ function extractErrorMessage(error) {
 	border-top: 1px solid rgba(255, 255, 255, 0.16);
 	color: rgba(255, 255, 255, 0.92);
 	font-size: 12px;
-	grid-template-columns: repeat(6, minmax(0, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
 	padding: 8px 10px 0;
+}
+
+.board-fuel-row {
+	align-items: center;
+	background: rgba(255, 255, 255, 0.1);
+	border-top: 1px solid rgba(255, 255, 255, 0.12);
+	display: grid;
+	gap: 8px;
+	grid-template-columns: auto minmax(0, 1fr);
+	padding: 8px 10px 0;
+}
+
+.board-fuel-label {
+	color: rgba(255, 255, 255, 0.78);
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+}
+
+.board-fuel-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+}
+
+.board-fuel-chip,
+.board-fuel-empty {
+	align-items: center;
+	background: rgba(255, 255, 255, 0.9);
+	border: 1px solid rgba(255, 255, 255, 0.22);
+	color: var(--ink);
+	display: inline-flex;
+	gap: 8px;
+	padding: 4px 9px;
+}
+
+.board-fuel-chip.current {
+	background: linear-gradient(135deg, #11cdef 0%, #5e72e4 100%);
+	border-color: rgba(17, 205, 239, 0.45);
+	color: #ffffff;
+}
+
+.board-fuel-chip span,
+.board-fuel-empty {
+	font-size: 11px;
+	font-weight: 600;
+}
+
+.board-fuel-chip strong {
+	font-size: 11px;
+	font-weight: 700;
 }
 
 .toolbar-field {
@@ -1762,6 +1933,18 @@ function extractErrorMessage(error) {
 	font-size: 11px;
 }
 
+.expense-badge {
+	align-items: center;
+	background: rgba(23, 43, 77, 0.1);
+	border: 1px solid rgba(23, 43, 77, 0.16);
+	color: var(--ink);
+	display: inline-flex;
+	font-size: 10px;
+	font-weight: 700;
+	justify-self: start;
+	padding: 2px 7px;
+}
+
 .route-cell.assigned .cell-meta,
 .route-cell.lr-created .cell-meta,
 .route-cell.trip-started .cell-meta {
@@ -1772,6 +1955,10 @@ function extractErrorMessage(error) {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 4px;
+}
+
+.cell-button-wrap {
+	display: inline-flex;
 }
 
 .cell-button {
@@ -1798,6 +1985,12 @@ function extractErrorMessage(error) {
 .cell-button.trip-button {
 	background: #2dce89;
 	border-color: #2dce89;
+	color: #ffffff;
+}
+
+.cell-button.expense-button {
+	background: #172b4d;
+	border-color: #172b4d;
 	color: #ffffff;
 }
 
@@ -1852,6 +2045,10 @@ function extractErrorMessage(error) {
 	}
 
 	.board-title-row {
+		grid-template-columns: 1fr;
+	}
+
+	.board-fuel-row {
 		grid-template-columns: 1fr;
 	}
 }
