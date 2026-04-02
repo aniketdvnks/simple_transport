@@ -338,3 +338,47 @@ def get_previous_assignment_summary(vehicle: str, assignment_date: str | None = 
 		order_by="assignment_date desc, creation desc",
 	)
 	return assignment or {}
+
+
+@frappe.whitelist()
+@frappe.validate_and_sanitize_search_inputs
+def get_available_driver_query(doctype, txt, searchfield, start, page_len, filters):
+	current_assignment = (filters or {}).get("current_assignment")
+	searchfield = searchfield or "name"
+
+	return frappe.db.sql(
+		f"""
+		select
+			emp.name,
+			emp.employee_name
+		from `tabEmployee` emp
+		where
+			emp.status = 'Active'
+			and ifnull(emp.st_is_driver, 0) = 1
+			and ifnull(emp.designation, '') = 'Driver'
+			and not exists (
+				select 1
+				from `tabDriver Assignment` da
+				where
+					da.driver = emp.name
+					and da.docstatus = 1
+					and da.status = %s
+					and (%s = '' or da.name != %s)
+			)
+			and (
+				emp.name like %s
+				or ifnull(emp.employee_name, '') like %s
+			)
+		order by emp.employee_name asc, emp.name asc
+		limit %s offset %s
+		""",
+		(
+			STATUS_ACTIVE,
+			current_assignment or "",
+			current_assignment or "",
+			f"%{txt}%",
+			f"%{txt}%",
+			page_len,
+			start,
+		),
+	)
