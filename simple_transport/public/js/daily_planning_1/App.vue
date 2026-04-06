@@ -367,6 +367,12 @@ async function openCreateLorryReceiptDialog(route, assignment) {
 		frappe.prompt(
 			[
 				{
+					fieldname: "lr_no",
+					label: __("LR No"),
+					fieldtype: "Data",
+					reqd: 1,
+				},
+				{
 					fieldname: "lr_date",
 					label: __("LR Date"),
 					fieldtype: "Date",
