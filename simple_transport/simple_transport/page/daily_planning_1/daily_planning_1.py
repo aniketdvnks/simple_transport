@@ -632,6 +632,7 @@ def update_route_on_transport_order(
 def create_lorry_receipt_from_assignment(
 	transport_order: str,
 	assignment_row: str,
+	lr_no:str,
 	lr_date=None,
 	gate_pass_no=None,
 	goods_description=None,
@@ -657,6 +658,7 @@ def create_lorry_receipt_from_assignment(
 	lorry_receipt = frappe.get_doc(
 		{
 			"doctype": "Lorry Receipt",
+			"lr_no":lr_no,
 			"company": _get_default_company(),
 			"lr_date": getdate(lr_date) if lr_date else getdate(doc.date),
 			"gate_pass_no": gate_pass_no,
